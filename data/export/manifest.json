@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "exportedAt": "2026-09-16T01:53:45.928Z",
+  "source": "Sites production D1 / DB",
+  "sourceVersion": 33,
+  "sourceCommit": "214a33541df0dd3f1de40be149239910f2712174",
+  "latestAsOf": "2026-09-14",
+  "tables": {
+    "portfolio_snapshots": {
+      "rows": 195,
+      "columns": [
+        "as_of",
+        "synced_at",
+        "currency",
+        "net_liquidation",
+        "previous_nav",
+        "total_cash",
+        "available_funds",
+        "buying_power",
+        "gross_position_value",
+        "daily_pnl",
+        "daily_return",
+        "week_return",
+        "ytd_return",
+        "unrealized_pnl",
+        "leverage",
+        "realized_ytd",
+        "source"
+      ]
+    },
+    "portfolio_positions": {
+      "rows": 16,
+      "columns": [
+        "as_of",
+        "contract_key",
+        "symbol",
+        "name",
+        "asset_class",
+        "currency",
+        "quantity",
+        "price",
+        "average_price",
+        "market_value",
+        "daily_pnl",
+        "unrealized_pnl"
+      ]
+    },
+    "fx_rates": {
+      "rows": 1,
+      "columns": [
+        "pair",
+        "rate",
+        "quoted_at",
+        "fetched_at",
+        "source"
+      ]
+    },
+    "sync_runs": {
+      "rows": 10,
+      "columns": [
+        "id",
+        "started_at",
+        "completed_at",
+        "status",
+        "as_of",
+        "error",
+        "trigger"
+      ]
+    }
+  },
+  "containsCredentials": false,
+  "notes": [
+    "Point-in-time export; not an automatic GitHub data feed.",
+    "All rows available through the database viewer were exported; historical positions exist only for stored snapshot dates.",
+    "Legacy history rows may contain zero or incomplete ancillary metrics; use NAV history for historical net liquidation."
+  ]
+}

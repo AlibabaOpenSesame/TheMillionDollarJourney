@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "started_at": "2026-07-20T08:21:25.588Z",
+    "completed_at": "2026-07-20T08:25:12.014Z",
+    "status": "success",
+    "as_of": "2026-07-20",
+    "error": null,
+    "trigger": "manual"
+  },
+  {
+    "id": 2,
+    "started_at": "2026-08-15T01:22:52.931Z",
+    "completed_at": "2026-08-15T01:23:06.359Z",
+    "status": "success",
+    "as_of": "2026-08-14",
+    "error": null,
+    "trigger": "manual"
+  },
+  {
+    "id": 3,
+    "started_at": "2026-08-21T02:39:40.000Z",
+    "completed_at": "2026-08-21T02:42:41.802Z",
+    "status": "success",
+    "as_of": "2026-08-20",
+    "error": null,
+    "trigger": "import"
+  },
+  {
+    "id": 4,
+    "started_at": "2026-08-21T06:06:49.075Z",
+    "completed_at": "2026-08-21T06:06:54.821Z",
+    "status": "success",
+    "as_of": "2026-08-20",
+    "error": null,
+    "trigger": "manual"
+  },
+  {
+    "id": 5,
+    "started_at": "2026-08-22T12:50:23.167Z",
+    "completed_at": "2026-08-22T12:50:28.946Z",
+    "status": "success",
+    "as_of": "2026-08-21",
+    "error": null,
+    "trigger": "recovery"
+  },
+  {
+    "id": 6,
+    "started_at": "2026-08-25T01:47:35.194Z",
+    "completed_at": "2026-08-25T01:47:40.946Z",
+    "status": "success",
+    "as_of": "2026-08-21",
+    "error": null,
+    "trigger": "recovery"
+  },
+  {
+    "id": 7,
+    "started_at": "2026-08-26T01:45:10.025Z",
+    "completed_at": "2026-08-26T01:45:15.806Z",
+    "status": "success",
+    "as_of": "2026-08-24",
+    "error": null,
+    "trigger": "recovery"
+  },
+  {
+    "id": 8,
+    "started_at": "2026-08-26T03:21:32.000Z",
+    "completed_at": "2026-08-26T03:28:29.348Z",
+    "status": "success",
+    "as_of": "2026-08-25",
+    "error": null,
+    "trigger": "import"
+  },
+  {
+    "id": 9,
+    "started_at": "2026-08-27T06:09:55.188Z",
+    "completed_at": "2026-08-27T06:10:01.197Z",
+    "status": "success",
+    "as_of": "2026-08-26",
+    "error": null,
+    "trigger": "recovery"
+  },
+  {
+    "id": 10,
+    "started_at": "2026-09-16T01:26:49.286Z",
+    "completed_at": "2026-09-16T01:26:55.218Z",
+    "status": "success",
+    "as_of": "2026-09-14",
+    "error": null,
+    "trigger": "recovery"
+  }
+]
