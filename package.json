@@ -6,6 +6,9 @@
     "node": ">=22.13.0"
   },
   "scripts": {
+    "build:cloudflare": "DEPLOY_TARGET=cloudflare npm run build",
+    "deploy:cloudflare": "npm run build:cloudflare && wrangler deploy",
+    "db:migrate:cloudflare": "wrangler d1 migrations apply million-dollar-journey --remote --config wrangler.jsonc",
     "data:validate": "node scripts/portfolio-export.mjs",
     "data:sql": "node scripts/portfolio-export.mjs --sql",
     "test:unit": "node --test tests/currency-display.test.ts tests/journey-metrics.test.ts tests/ibkr-i18n.test.mjs tests/ibkr-manual-import-auth.test.mjs tests/ibkr-schedule.test.mjs tests/ibkr-typography.test.mjs",

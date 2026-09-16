@@ -15,9 +15,11 @@ A bilingual investment dashboard and journal following Ding Xiaoshan's IBKR port
 - 根据访问者本地时间切换昼夜主题，另有 `/jade-key` Three.js 展示页。
 - IBKR Flex 只读报表接入，配置每日北京时间 07:30 检查及访问时补同步。
 
-Website: [百万美元之路](https://ibkr-portfolio-panorama.languagemodel.chatgpt.site/) (access follows the existing Sites policy).
+Website: [百万美元之路 · OpenInvestAI](https://openinvestai.com/). English: [openinvestai.com/en](https://openinvestai.com/en).
 
-This repository contains the source of Sites **version 33**, plus documentation and a point-in-time database export. The initial GitHub release is **v1.0.0**. It does not include the unimplemented optimization plan discussed after v33.
+The production site now runs on Cloudflare Workers with a dedicated D1 database. `www.openinvestai.com` redirects to the root domain. See [Cloudflare deployment](docs/CLOUDFLARE.md) for build commands, runtime secrets and current synchronization limitations. The original Sites deployment is retained separately.
+
+The source originates from Sites **version 33**. GitHub **v1.0.0** is the initial archive; subsequent commits add direct Cloudflare deployment. The earlier comprehensive optimization plan is not included.
 
 ## 本地运行 / Run locally
 

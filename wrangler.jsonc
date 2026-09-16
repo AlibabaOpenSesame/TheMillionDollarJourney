@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "the-million-dollar-journey",
+  "account_id": "3ce0c0f7a0ed9393bb71f22156f1fdda",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-05-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "observability": { "enabled": true },
+  "triggers": { "crons": ["30 23 * * *"] },
+  "routes": [
+    { "pattern": "openinvestai.com", "custom_domain": true },
+    { "pattern": "www.openinvestai.com", "custom_domain": true }
+  ],
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "million-dollar-journey",
+    "database_id": "f9008a17-fa98-4d53-b5db-1fc9f8ff8421",
+    "migrations_dir": "drizzle"
+  }]
+}

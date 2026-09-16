@@ -406,7 +406,9 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
         setFx(data.fx ?? null);
         if (data.portfolio) {
           setAccount(data.portfolio);
-          if (data.lastRun?.status === "failed") {
+          if (!data.configured) {
+            setSyncView({ kind: "fallback", label: copy.sync.waiting });
+          } else if (data.lastRun?.status === "failed") {
             setSyncView({ kind: "error", label: copy.sync.failed, detail: data.lastRun.error ?? undefined });
           } else {
             setSyncView({ kind: "live", label: copy.sync.automatic });

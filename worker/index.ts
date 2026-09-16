@@ -638,6 +638,11 @@ const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
+    if (url.hostname === "www.openinvestai.com") {
+      url.hostname = "openinvestai.com";
+      return Response.redirect(url.toString(), 308);
+    }
+
     if (url.pathname === "/api/portfolio" && request.method === "GET") {
       if (!env.DB) return json({ configured: false, portfolio: null, lastRun: null, fx: null }, { status: 503 });
       const data = await readPortfolio(env);
