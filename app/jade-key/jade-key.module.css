@@ -1,0 +1,332 @@
+.page {
+  --ink: #2d2417;
+  --gold: #b78635;
+  --paper: #eee7da;
+  min-height: 100svh;
+  margin: 0;
+  padding: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 18% 14%, rgb(255 251 238 / 92%), transparent 34%),
+    linear-gradient(135deg, #e6dcc9 0%, #f3eee5 52%, #ddd0b9 100%);
+}
+
+.experience {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(440px, 480px) auto auto;
+  align-content: start;
+  width: min(100%, 1440px);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 22px clamp(20px, 4vw, 64px) 18px;
+  overflow: hidden;
+  font-family: "Noto Serif SC", "Songti SC", "STSong", serif;
+}
+
+.experience::before,
+.experience::after {
+  position: absolute;
+  inset: 16px;
+  z-index: 3;
+  border: 1px solid rgb(168 123 52 / 38%);
+  content: "";
+  pointer-events: none;
+}
+
+.experience::after {
+  inset: 22px;
+  border-color: rgb(168 123 52 / 18%);
+}
+
+.atmosphere {
+  position: absolute;
+  inset: 0;
+  opacity: 0.26;
+  background-image: repeating-linear-gradient(0deg, transparent 0 5px, rgb(91 68 35 / 5%) 6px);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.header,
+.footer {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header {
+  padding: 18px 22px 12px;
+  border-top: 1px solid rgb(151 109 45 / 28%);
+}
+
+.header h1 {
+  margin: 1px 0 0;
+  font-size: clamp(32px, 4.2vw, 60px);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1;
+}
+
+.header p {
+  margin: 8px 0 0;
+  color: #72562c;
+  letter-spacing: 0.28em;
+}
+
+.header .kicker {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+}
+
+.status {
+  display: grid;
+  gap: 5px;
+  padding-left: 22px;
+  text-align: right;
+  border-left: 1px solid rgb(151 109 45 / 30%);
+}
+
+.status span {
+  color: var(--gold);
+  font: 600 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.22em;
+}
+
+.status strong {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+.stage {
+  position: relative;
+  z-index: 2;
+  height: 480px;
+  min-height: 0;
+  touch-action: pan-y;
+}
+
+.stage canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 440px;
+  border-radius: 2px;
+}
+
+.webglFallback {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: #765d35;
+  background: linear-gradient(135deg, #eee5d5, #f8f4eb);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+}
+
+.axisLabel {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  color: rgb(81 61 32 / 55%);
+  font: 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.14em;
+  transform: rotate(90deg) translateX(50%);
+  transform-origin: right center;
+}
+
+.viewControls {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid rgb(131 91 36 / 23%);
+  border-radius: 999px;
+  background: rgb(249 245 235 / 78%);
+  backdrop-filter: blur(12px);
+  transform: translateX(-50%);
+}
+
+.actionPanel {
+  position: absolute;
+  top: 22px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid rgb(131 91 36 / 24%);
+  border-radius: 12px;
+  background: rgb(249 245 235 / 82%);
+  backdrop-filter: blur(12px);
+}
+
+.actionPanel span {
+  min-width: 130px;
+  padding: 0 8px;
+  color: #5f4827;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.actionPanel button {
+  padding: 7px 10px;
+  color: #fffaf0;
+  border: 0;
+  border-radius: 8px;
+  background: #7b5b2b;
+  font: 500 11px/1 "Noto Sans SC", sans-serif;
+  cursor: pointer;
+}
+
+.viewControls button {
+  padding: 7px 14px;
+  color: #6d5733;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: 500 12px/1 "Noto Sans SC", sans-serif;
+  cursor: pointer;
+}
+
+.viewControls button.active {
+  color: #fffaf0;
+  background: #7b5b2b;
+}
+
+.footer {
+  gap: 18px;
+  padding: 11px 22px 4px;
+  color: #83663a;
+  border-top: 1px solid rgb(151 109 45 / 28%);
+  font: 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.2em;
+}
+
+.footer i {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(151 109 45 / 8%), rgb(151 109 45 / 42%), rgb(151 109 45 / 8%));
+}
+
+.capture .header,
+.capture .footer,
+.capture .viewControls,
+.capture .axisLabel,
+.capture .actionPanel,
+.capture::before,
+.capture::after {
+  display: none;
+}
+
+.capture {
+  display: block;
+  padding: 0;
+}
+
+.capture .stage,
+.capture .stage canvas {
+  width: 100%;
+  height: 100svh !important;
+  min-height: 100svh;
+}
+
+@media (max-width: 720px) {
+  .experience {
+    grid-template-rows: 260px auto auto;
+    padding: 18px 12px 14px;
+  }
+
+  .experience.capture {
+    padding: 0;
+  }
+
+  .experience::before {
+    inset: 7px;
+  }
+
+  .experience::after {
+    inset: 11px;
+  }
+
+  .header {
+    padding: 12px 8px 8px;
+  }
+
+  .status {
+    display: none;
+  }
+
+  .stage canvas {
+    min-height: 240px;
+  }
+
+  .stage {
+    height: 260px;
+  }
+
+  .footer {
+    padding-inline: 8px;
+  }
+
+  .footer span:nth-of-type(2) {
+    display: none;
+  }
+
+  .actionPanel {
+    top: 8px;
+    right: 8px;
+    left: 8px;
+    gap: 4px;
+    flex-wrap: wrap;
+    padding: 5px;
+  }
+
+  .actionPanel span {
+    flex: 1 0 100%;
+    min-width: 0;
+    font-size: 10px;
+  }
+
+  .actionPanel button {
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+
+  .viewControls {
+    bottom: 8px;
+    width: calc(100% - 16px);
+    gap: 2px;
+    justify-content: center;
+    overflow-x: auto;
+  }
+
+  .viewControls button {
+    flex: 0 0 auto;
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+
+  .header h1 {
+    font-size: 32px;
+  }
+
+  .header p {
+    letter-spacing: 0.14em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewControls button,
+  .actionPanel button {
+    transition: none;
+  }
+}
