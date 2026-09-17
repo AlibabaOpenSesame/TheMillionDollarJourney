@@ -323,47 +323,49 @@ function JourneyHero({ account, journey, locale, copy, money, fx }: { account: P
     ? copy.journey.remainingToStart(formatJourneyUsd(journey.remainingToStart))
     : copy.journey.remainingToTarget(formatJourneyUsd(journey.remainingToTarget));
   const cnyApprox = formatCnyApprox(journey.currentValue, fx?.rate ?? null, locale);
-  // Underwater: break-even ruler only — do not drive the bar with journey.progress (stays 0% below $10K).
+  const currentSecondary = cnyApprox ?? (locale === "zh" ? copy.fx.unavailableUnderCurrent : null);
   const rulerProgress = underwater ? 0 : journey.progress * 100;
+  const leftEnd = underwater ? formatJourneyUsd(journey.currentValue) : "$10K";
+  const rightEnd = underwater ? "$10K" : "$1M";
   return (
     <section className="journey-hero" aria-labelledby="journey-title">
       <div className="journey-hero-heading">
         <div>
           <span className="journey-sequence">INVESTMENT JOURNEY · 001</span>
           <h1 id="journey-title">{copy.title}</h1>
-          <p className="journey-alternate-title">{copy.journey.alternateTitle}</p>
+          <p className={`journey-alternate-title demoted`}>{copy.journey.alternateTitle}</p>
           <p className="journey-weekly-pulse">{copy.journey.weeklyPulse}</p>
         </div>
         <div className="journey-manifesto"><strong>{copy.journey.route}</strong><span>{copy.journey.motto}</span></div>
       </div>
 
-      <div className="journey-route" data-phase={underwater ? "underwater" : "journey"} style={{ "--journey-progress": `${rulerProgress}%` } as CSSProperties}>
-        <div className="journey-route-values">
-          <div><span>START</span><strong>$10,000</strong></div>
+      <div className="journey-route" data-phase={underwater ? "underwater" : "journey"} data-locale={locale} style={{ "--journey-progress": `${rulerProgress}%` } as CSSProperties}>
+        <div className={`journey-route-values${locale === "zh" ? " route-labels-zh" : ""}`}>
+          <div><span>{copy.journey.routeStart}</span><strong>{underwater ? leftEnd : "$10,000"}</strong></div>
           <div className={`journey-current-value${underwater ? " underwater" : ""}`}>
-            <span>CURRENT</span>
+            <span>{copy.journey.routeCurrent}</span>
             <strong>{formatJourneyUsd(journey.currentValue)}</strong>
-            {cnyApprox ? <small className="current-cny-approx">{cnyApprox}</small> : null}
+            {currentSecondary ? <small className="current-cny-approx">{currentSecondary}</small> : null}
           </div>
-          <div><span>TARGET</span><strong>$1,000,000</strong></div>
+          <div><span>{copy.journey.routeTarget}</span><strong>{underwater ? "$10,000" : "$1,000,000"}</strong></div>
         </div>
         <div className="journey-progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Number(rulerProgress.toFixed(2))} aria-label={remainingLabel}>
           <span className="journey-progress-rail">
             <span className="journey-progress-fill" />
             <span className="journey-progress-marker" />
-            <JourneyBullMarker key={rulerProgress.toFixed(4)} completed={!underwater && journey.progress >= 1} />
+            <JourneyBullMarker key={`${underwater}-${rulerProgress.toFixed(4)}`} completed={!underwater && journey.progress >= 1} />
           </span>
         </div>
-        <div className="journey-progress-labels"><span>$10K</span><span>{remainingLabel}</span><span>$1M</span></div>
+        <div className="journey-progress-labels"><span>{leftEnd}</span><span>{remainingLabel}</span><span>{rightEnd}</span></div>
       </div>
 
       <div className="journey-kpis">
         <article>
           <span>{copy.journey.currentPortfolio}</span>
           <strong>{formatJourneyUsd(journey.currentValue)}</strong>
-          <small>{cnyApprox ?? `${account.asOf} · USD`}</small>
+          <small>{currentSecondary ?? `${account.asOf} · USD`}</small>
         </article>
-        <article>
+        <article className="kpi-return">
           <span>{copy.journey.totalReturn}</span>
           <strong className={journey.totalReturn >= 0 ? "positive" : "negative"}>{percent(journey.totalReturn, 1)}</strong>
           <small>{copy.journey.usdBasis}</small>
@@ -383,7 +385,7 @@ function MilestoneRoadmap({ journey, locale, copy }: { journey: JourneyMetrics; 
       <div className="milestone-grid">
         {journey.milestones.map((milestone, index) => (
           <article className={`milestone-card milestone-${milestone.status}`} key={milestone.value}>
-            <div><span>{copy.journey.milestone(index + 1)}</span><em>{milestone.status === "achieved" ? copy.journey.achieved : milestone.status === "next" ? copy.journey.next : copy.journey.locked}</em></div>
+            <div className="milestone-status-row"><span>{copy.journey.milestone(index + 1)}</span><em className="milestone-pill">{milestone.status === "achieved" ? copy.journey.achieved : milestone.status === "next" ? copy.journey.next : copy.journey.locked}</em></div>
             <strong>{formatMilestoneUsd(milestone.value)}</strong>
             <time dateTime={milestone.reachedAt ?? undefined}>{milestone.reachedAt ? formatJourneyDate(milestone.reachedAt, locale) : "—"}</time>
             <small>{milestone.daysFromJourneyStart !== null ? copy.journey.recordedSince(milestone.daysFromJourneyStart) : copy.journey.noRecordedDate}</small>
@@ -544,9 +546,16 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
           <AllocationPanel account={account} copy={copy} money={money} />
         </section>
 
-        <section className="section-block">
+                <section className="risk-strip" aria-label={copy.risks.aria}>
+          <article><span>{copy.risks.concentration}</span><strong className={largestWeight > 0.5 ? "negative" : ""}>{largest ? `${largest.symbol} ${(largestWeight * 100).toFixed(1)}%` : copy.metrics.noPositions}</strong><small>{largestWeight > 0.5 ? copy.risks.highConcentration : copy.risks.controlledConcentration}</small></article>
+          <article><span>{copy.risks.exposure}</span><strong>{healthcareOnly ? copy.risks.healthcare : copy.risks.diversified}</strong><small>{healthcareOnly ? copy.risks.healthcareNote : copy.risks.diversifiedNote}</small></article>
+          <article><span>{copy.risks.cashBuffer}</span><strong className={cashRatio < 0.05 ? "negative" : ""}>{(cashRatio * 100).toFixed(3)}%</strong><small>{cashRatio < 0.05 ? copy.risks.lowCash : copy.risks.cashAvailable}</small></article>
+          <article><span>{copy.risks.lastSevenDays}</span><strong className={account.weekReturn >= 0 ? "positive" : "negative"}>{percent(account.weekReturn)}</strong><small>{copy.risks.closeSnapshot}</small></article>
+        </section>
+
+<section className="section-block">
           <div className="section-title-row">
-            <div><span className="section-kicker">04</span><h2>{copy.sections.holdings}</h2><p>{copy.sections.holdingsNote}</p></div>
+            <div><span className="section-kicker">03</span><h2>{copy.sections.holdings}</h2><p>{copy.sections.holdingsNote}</p></div>
           </div>
           <article className="panel table-panel">
             <div className="table-scroll">
@@ -558,16 +567,10 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
           </article>
         </section>
 
-        <section className="risk-strip" aria-label={copy.risks.aria}>
-          <article><span>{copy.risks.concentration}</span><strong className={largestWeight > 0.5 ? "negative" : ""}>{largest ? `${largest.symbol} ${(largestWeight * 100).toFixed(1)}%` : copy.metrics.noPositions}</strong><small>{largestWeight > 0.5 ? copy.risks.highConcentration : copy.risks.controlledConcentration}</small></article>
-          <article><span>{copy.risks.exposure}</span><strong>{healthcareOnly ? copy.risks.healthcare : copy.risks.diversified}</strong><small>{healthcareOnly ? copy.risks.healthcareNote : copy.risks.diversifiedNote}</small></article>
-          <article><span>{copy.risks.cashBuffer}</span><strong className={cashRatio < 0.05 ? "negative" : ""}>{(cashRatio * 100).toFixed(3)}%</strong><small>{cashRatio < 0.05 ? copy.risks.lowCash : copy.risks.cashAvailable}</small></article>
-          <article><span>{copy.risks.lastSevenDays}</span><strong className={account.weekReturn >= 0 ? "positive" : "negative"}>{percent(account.weekReturn)}</strong><small>{copy.risks.closeSnapshot}</small></article>
-        </section>
 
         <section className="section-block option-section">
           <div className="section-title-row">
-            <div><span className="section-kicker">05</span><h2>{copy.sections.options}</h2><p>{copy.sections.optionsNote}</p></div>
+            <div><span className="section-kicker">04</span><h2>{copy.sections.options}</h2><p>{copy.sections.optionsNote}</p></div>
             <span className="empty-count">{copy.sections.contracts(optionPositions.length)}</span>
           </div>
           {optionPositions.length ? (
@@ -591,11 +594,9 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
 
         <section className="section-block contact-section" aria-labelledby="contact-heading">
           <div className="section-title-row">
-            <div><span className="section-kicker">07</span><h2 id="contact-heading">{copy.sections.contact}</h2><p>{copy.sections.contactNote}</p></div>
+            <div><span className="section-kicker">05</span><h2 id="contact-heading">{copy.sections.contact}</h2><p>{copy.sections.contactNote}</p></div>
           </div>
           <div className="contact-grid">
-            <article className="panel contact-card"><strong>{locale === "zh" ? "中国" : "China"}</strong><a href="tel:+8619951677665"><span>{copy.table.phone}</span>+86 199 5167 7665</a><a href="mailto:people@china.com"><span>{copy.table.email}</span>people@china.com</a></article>
-            <article className="panel contact-card"><strong>{locale === "zh" ? "美国" : "United States"}</strong><a href="tel:+19809990101"><span>{copy.table.phone}</span>+1 980 999 0101</a><a href="mailto:0288882@gmail.com"><span>{copy.table.email}</span>0288882@gmail.com</a></article>
             <article className="panel contact-card social-card">
               <div className="radio-contact-copy">
                 <strong>{locale === "zh" ? "X / 业余无线电" : "X / Amateur Radio"}</strong>
@@ -604,6 +605,8 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
               </div>
               <img className="amateur-radio-logo" src="/bd4wuc-amateur-radio-logo.webp" alt={locale === "zh" ? "BD4WUC 业余无线电标识" : "BD4WUC amateur radio logo"} width="400" height="400" />
             </article>
+            <article className="panel contact-card"><strong>{locale === "zh" ? "中国" : "China"}</strong><a href="tel:+8619951677665"><span>{copy.table.phone}</span>+86 199 5167 7665</a><a href="mailto:people@china.com"><span>{copy.table.email}</span>people@china.com</a></article>
+            <article className="panel contact-card"><strong>{locale === "zh" ? "美国" : "United States"}</strong><a href="tel:+19809990101"><span>{copy.table.phone}</span>+1 980 999 0101</a><a href="mailto:0288882@gmail.com"><span>{copy.table.email}</span>0288882@gmail.com</a></article>
           </div>
         </section>
 

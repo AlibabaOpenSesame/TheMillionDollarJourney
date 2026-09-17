@@ -17,7 +17,15 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "百万美元之路｜丁小山美股公开投资",
     description: "从 10,000 美元到 1,000,000 美元：丁小山的公开投资旅程、净值曲线、里程碑、持仓与盈亏记录。",
-    icons: { icon: "/favicon.svg" },
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "48x48" },
+        { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
+        { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+      ],
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+      shortcut: ["/favicon.ico"],
+    },
     openGraph: {
       title: "百万美元之路｜The Million Dollar Journey",
       description: "$10K → $1M · One Portfolio. One Journey.",
