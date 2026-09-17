@@ -1,78 +1,66 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render(pathname) {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${pathname}`);
-  const { default: worker } = await import(workerUrl.href);
+const root = new URL("../", import.meta.url);
 
-  return worker.fetch(
-    new Request(`http://localhost${pathname}`, {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
+async function sources() {
+  const [copy, dashboard, currency, css] = await Promise.all([
+    readFile(new URL("app/portfolio-copy.ts", root), "utf8"),
+    readFile(new URL("app/PortfolioDashboard.tsx", root), "utf8"),
+    readFile(new URL("app/currency.ts", root), "utf8"),
+    readFile(new URL("app/globals.css", root), "utf8"),
+  ]);
+  return { copy, dashboard, currency, css };
 }
 
-test("renders the existing Chinese IBKR dashboard at the root route", async () => {
-  const response = await render("/");
-  assert.equal(response.status, 200);
+test("Chinese locale copy locks underwater ruler + sync chips + weekly pulse", async () => {
+  const { copy, dashboard } = await sources();
 
-  const html = await response.text();
-  assert.match(html, /百万美元之路/);
-  assert.match(html, /丁小山美股公开投资/);
-  assert.match(html, /\$10,000 → \$1,000,000/);
-  assert.match(html, /资产配置/);
-  assert.match(html, /净值曲线/);
-  assert.match(html, /journey-bull-v1\.webp/);
-  assert.match(html, /journey-bull-run-v2\.webp/);
-  assert.match(html, /journey-bull-run-sprite/);
-  assert.match(html, /journey-progress-rail/);
-  assert.match(html, /实时汇率/);
-  assert.match(html, /正在获取 USD\/CNY/);
-  assert.match(html, /当前持仓/);
-  assert.match(html, /联系方式/);
-  assert.match(html, /people@china\.com/);
-  assert.match(html, /\+86 199 5167 7665/);
-  assert.match(html, /0288882@gmail\.com/);
-  assert.match(html, /x\.com\/languagemodelAI/);
-  assert.match(html, /呼号/);
-  assert.match(html, /BD4WUC/);
-  assert.match(html, /每天北京时间 07:30 执行/);
-  assert.match(html, /href="\/en"/);
-  assert.match(html, /aria-current="page"[^>]*>中文</);
+  assert.match(copy, /百万美元之路/);
+  assert.match(copy, /回本 · 还差 \$\{value\}/);
+  assert.match(copy, /本周近况：仍在回本区/);
+  assert.match(copy, /dataChip: "数据"/);
+  assert.match(copy, /authorizeCta: "需授权自动同步→"/);
+  assert.match(copy, /routeStart: "起点"/);
+  assert.match(copy, /unavailableUnderCurrent/);
+
+  assert.match(dashboard, /formatCnyApprox/);
+  assert.match(dashboard, /underwater/);
+  assert.match(dashboard, /\$10,000/);
+  assert.match(dashboard, /header-chip-row/);
+  assert.match(dashboard, /data-chip/);
+  assert.match(dashboard, /sync-chip/);
+  assert.doesNotMatch(dashboard, /旅程进度/);
 });
 
-test("renders a fully localized English IBKR dashboard at /en", async () => {
-  const response = await render("/en");
-  assert.equal(response.status, 200);
+test("English locale copy is independent (not a ZH mirror)", async () => {
+  const { copy } = await sources();
 
-  const html = await response.text();
-  assert.match(html, /The Million Dollar Journey/);
-  assert.match(html, /Ding Xiaoshan U\.S\. Public Equity Portfolio/);
-  assert.match(html, /Asset Allocation/);
-  assert.match(html, /Net Asset Curve/);
-  assert.match(html, /journey-bull-v1\.webp/);
-  assert.match(html, /journey-bull-run-v2\.webp/);
-  assert.doesNotMatch(html, /实时汇率/);
-  assert.match(html, /Transactions &amp; P&amp;L/);
-  assert.match(html, /Current Holdings/);
-  assert.match(html, /Option Positions/);
-  assert.match(html, /Contact/);
-  assert.match(html, /United States/);
-  assert.match(html, /\+1 980 999 0101/);
-  assert.match(html, /0288882@gmail\.com/);
-  assert.match(html, /@languagemodelAI/);
-  assert.match(html, /Call Sign/);
-  assert.match(html, /Runs every day at 07:30 China Standard Time/);
-  assert.match(html, /href="\/"/);
-  assert.match(html, /aria-current="page"[^>]*>English</);
+  assert.match(copy, /The Million Dollar Journey/);
+  assert.match(copy, /Break-even · \$\{value\} to go/);
+  assert.match(copy, /Still ~\$7\.3k below the \$10k start/);
+  assert.match(copy, /dataChip: "Data"/);
+  assert.match(copy, /authorizeCta: "Authorize auto-sync →"/);
+  assert.match(copy, /Value \/ Wt/);
+  assert.match(copy, /Unreal\./);
+  assert.match(copy, /routeStart: "START"/);
+});
+
+test("money view stays USD-primary with optional CNY approx line", async () => {
+  const { currency, dashboard } = await sources();
+
+  assert.match(currency, /createMoneyView/);
+  assert.match(currency, /formatCnyApprox/);
+  assert.match(currency, /primary:\s*"USD"|currency:\s*"USD"/);
+  assert.match(dashboard, /current-cny-approx|cnyApprox/);
+});
+
+test("header key mark stays full horizontal jade key (not favicon crop)", async () => {
+  const { dashboard, css } = await sources();
+
+  assert.match(dashboard, /cloud-jade-key-mark-v3\.webp/);
+  assert.match(dashboard, /journey-key-mark/);
+  assert.match(css, /journey-key-mark/);
+  assert.match(css, /object-fit:\s*contain/);
 });

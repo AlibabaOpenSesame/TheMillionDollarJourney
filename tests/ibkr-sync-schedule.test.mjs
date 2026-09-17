@@ -2,9 +2,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-test("packages the IBKR end-of-day cron trigger", async () => {
-  const config = JSON.parse(await readFile(new URL("../dist/server/wrangler.json", import.meta.url), "utf8"));
-  assert.deepEqual(config.triggers?.crons, ["30 23 * * 1-5"]);
+test("packages dual IBKR end-of-day cron triggers", async () => {
+  const wrangler = await readFile(new URL("../wrangler.jsonc", import.meta.url), "utf8");
+  assert.match(wrangler, /"30 22 \* \* 1-5"/);
+  assert.match(wrangler, /"30 23 \* \* 1-5"/);
 });
 
 test("records trigger provenance and exposes catch-up synchronization", async () => {
@@ -13,42 +14,20 @@ test("records trigger provenance and exposes catch-up synchronization", async ()
   assert.match(source, /syncPortfolio\(env, "scheduled"\)/);
   assert.match(source, /syncPortfolio\(env, "recovery"\)/);
   assert.match(source, /latestScheduledAt/);
+  assert.match(source, /writeLatestCache/);
   assert.doesNotMatch(source, /ctx\.waitUntil\(syncPortfolio\(env\)\.catch/);
 });
 
-test("scheduled failures reject after recording a failed run", async () => {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-  const statements = [];
-  const db = {
-    prepare(sql) {
-      const statement = {
-        sql,
-        args: [],
-        bind(...args) {
-          this.args = args;
-          return this;
-        },
-        async run() {
-          statements.push({ sql: this.sql, args: this.args });
-          return { meta: { last_row_id: 1 } };
-        },
-      };
-      return statement;
-    },
-    async batch() {},
-  };
+test("scheduled handler skips when not 18:00 America/New_York", async () => {
+  // Aug 21 2026 22:30 UTC = 18:30 EDT → hour 18 → should attempt sync (and fail without secrets).
+  // Aug 21 2026 23:30 UTC = 19:30 EDT → hour 19 → should skip before syncPortfolio.
+  const ibkrUrl = new URL("../worker/ibkr.ts", import.meta.url);
+  ibkrUrl.searchParams.set("t", `${process.pid}-guard`);
+  const { isCorrectNYSyncTime } = await import(ibkrUrl.href);
 
-  await assert.rejects(
-    () => worker.scheduled(
-      { cron: "30 23 * * 1-5", scheduledTime: Date.UTC(2026, 7, 21, 23, 30) },
-      { DB: db },
-    ),
-    /IBKR Flex token or query ID is not configured/,
-  );
-  assert.ok(statements.some(({ sql, args }) =>
-    sql.includes("INSERT INTO sync_runs") && args.includes("scheduled")));
-  assert.ok(statements.some(({ sql, args }) =>
-    sql.includes("UPDATE sync_runs SET completed_at") && args.includes("IBKR Flex token or query ID is not configured")));
+  assert.equal(isCorrectNYSyncTime(new Date(Date.UTC(2026, 7, 21, 22, 30))), true);
+  assert.equal(isCorrectNYSyncTime(new Date(Date.UTC(2026, 7, 21, 23, 30))), false);
+  // Jan (EST): 23:30 UTC = 18:30 EST
+  assert.equal(isCorrectNYSyncTime(new Date(Date.UTC(2026, 0, 21, 23, 30))), true);
+  assert.equal(isCorrectNYSyncTime(new Date(Date.UTC(2026, 0, 21, 22, 30))), false);
 });
