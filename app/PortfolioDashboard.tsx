@@ -137,9 +137,9 @@ function MetricCard({
 function LanguageSwitch({ locale, copy }: { locale: PortfolioLocale; copy: Copy }) {
   return (
     <nav className="language-switch" aria-label={copy.languageLabel}>
-      <Link href="/" className={locale === "zh" ? "active" : ""} aria-current={locale === "zh" ? "page" : undefined}>{copy.languageZh}</Link>
+      <Link href="/" className={locale === "zh" ? "active" : ""} aria-current={locale === "zh" ? "page" : undefined}><span className="lang-label">{copy.languageZh}</span></Link>
       <span aria-hidden="true">/</span>
-      <Link href="/en" className={locale === "en" ? "active" : ""} aria-current={locale === "en" ? "page" : undefined}>{copy.languageEn}</Link>
+      <Link href="/en" className={locale === "en" ? "active" : ""} aria-current={locale === "en" ? "page" : undefined}><span className="lang-label">{copy.languageEn}</span></Link>
     </nav>
   );
 }
@@ -341,7 +341,7 @@ function JourneyHero({ account, journey, locale, copy, money, fx }: { account: P
 
       <div className="journey-route" data-phase={underwater ? "underwater" : "journey"} data-locale={locale} style={{ "--journey-progress": `${rulerProgress}%` } as CSSProperties}>
         <div className={`journey-route-values${locale === "zh" ? " route-labels-zh" : ""}`}>
-          <div><span>{copy.journey.routeStart}</span><strong>{underwater ? leftEnd : "$10,000"}</strong></div>
+          <div><span>{copy.journey.routeStart}</span><strong>$10,000</strong></div>
           <div className={`journey-current-value${underwater ? " underwater" : ""}`}>
             <span>{copy.journey.routeCurrent}</span>
             <strong>{formatJourneyUsd(journey.currentValue)}</strong>
@@ -498,7 +498,7 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
             </div>
           </div>
           <Link className="journey-key-link" href="/jade-key" aria-label={copy.keyLogoLabel} title={copy.keyLogoLabel}>
-            <img src="/cloud-jade-key-mark-v3.webp" alt={copy.keyLogoAlt} width="1279" height="452" />
+            <img className="journey-key-mark" src="/cloud-jade-key-mark-v3.webp" alt={copy.keyLogoAlt} width="1279" height="452" decoding="async" />
           </Link>
           <div className="site-header-actions">
             <LanguageSwitch locale={locale} copy={copy} />

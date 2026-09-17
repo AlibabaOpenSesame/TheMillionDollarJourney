@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-09-17
+
+- Header shows the full horizontal jade key (`cloud-jade-key-mark-v3.webp`); square crop stays favicon-only.
+- START/起点 column always `$10,000`; ruler ends remain `$current → $10K`.
+
+
 ## [1.2.0] - 2026-09-17
 
 - Locale-split UX: Chinese `/` and English `/en` copy edited independently (no shared calque).
