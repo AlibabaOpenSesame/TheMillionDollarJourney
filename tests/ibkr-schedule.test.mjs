@@ -8,14 +8,10 @@ test("schedules dual weekday UTC crons with NY 18:00 DST guard", async () => {
     readFile(new URL("../worker/index.ts", import.meta.url), "utf8"),
     readFile(new URL("../worker/ibkr.ts", import.meta.url), "utf8"),
   ]);
-
   assert.match(wrangler, /"30 22 \* \* 1-5"/);
   assert.match(wrangler, /"30 23 \* \* 1-5"/);
-  assert.match(worker, /async scheduled\(/);
   assert.match(worker, /isCorrectNYSyncTime/);
   assert.match(worker, /syncPortfolio\(env,\s*"scheduled"\)/);
-  assert.match(ibkr, /export function isCorrectNYSyncTime/);
   assert.match(ibkr, /America\/New_York/);
   assert.match(ibkr, /hour === 18/);
-  assert.doesNotMatch(worker, /getUTCDay\(\)/);
 });

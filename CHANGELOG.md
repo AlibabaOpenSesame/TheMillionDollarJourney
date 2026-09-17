@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.0 — Locale UX (no live IBKR required)
+
+- ZH/EN independent: unconfigured CTA `待接入自动同步` / `Connect auto-sync` (no fake authorize)
+- Data chip binds `updatedAt`/`asOf`; muted **快照** / **Snapshot** badge when stale or unconfigured
+- Weekly pulse uses live gap to $10k; START stays `$10,000`; underwater KPIs stay two cards
+- 390: clip horizontal overflow; chips stay 32px; key 28px full mark
+
 ## 1.3.0 — IBKR D1+KV evolve
 
 - Extract `worker/ibkr.ts` (Flex v3 SendRequest/GetStatement + parse, NY 18:00 DST guard)
