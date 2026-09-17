@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0 — IBKR D1+KV evolve
+
+- Extract `worker/ibkr.ts` (Flex v3 SendRequest/GetStatement + parse, NY 18:00 DST guard)
+- Add `worker/cache.ts` — KV keys `portfolio:latest` / `positions:latest` / `sync:status` only
+- Bind existing Worker to KV `OPENINVEST_CACHE` as `CACHE`; D1 remains `million-dollar-journey` (SoT)
+- Migration `0003_trades` (+ journal entry for `0002_sync_run_trigger`)
+- Dual weekday crons `30 22/23 * * 1-5` UTC; skip unless America/New_York hour is 18
+- Frontend unchanged
+
 ## [Unreleased]
 
 ## [1.2.1] - 2026-09-17

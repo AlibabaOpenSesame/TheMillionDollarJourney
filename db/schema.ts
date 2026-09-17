@@ -54,3 +54,18 @@ export const fxRates = sqliteTable("fx_rates", {
   fetchedAt: text("fetched_at").notNull(),
   source: text("source").notNull(),
 });
+
+export const trades = sqliteTable("trades", {
+  tradeId: text("trade_id").primaryKey(),
+  tradeDate: text("trade_date").notNull(),
+  symbol: text("symbol").notNull(),
+  side: text("side"),
+  quantity: real("quantity"),
+  price: real("price"),
+  commission: real("commission"),
+  currency: text("currency").default("USD"),
+  tradeTime: text("trade_time"),
+}, (table) => [
+  index("idx_trades_date").on(table.tradeDate),
+]);
+
