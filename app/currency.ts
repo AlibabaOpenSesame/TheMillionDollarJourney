@@ -9,20 +9,31 @@ export type MoneyView = {
   signed: (value: number) => string;
 };
 
-export function createMoneyView(locale: "zh" | "en", fx: FxQuote | null): MoneyView {
-  const converted = locale === "zh" && fx?.rate !== null && fx?.rate !== undefined && Number.isFinite(fx.rate) && fx.rate > 0;
-  const code = converted ? "CNY" : "USD";
-  const rate = converted ? fx.rate ?? 1 : 1;
+/** Primary money view is always USD. Locale only affects number formatting. */
+export function createMoneyView(locale: "zh" | "en", _fx: FxQuote | null): MoneyView {
   const formatter = new Intl.NumberFormat(locale === "zh" ? "zh-CN" : "en-US", {
     style: "currency",
-    currency: code,
+    currency: "USD",
     currencyDisplay: "narrowSymbol",
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-  const convert = (value: number) => value * rate;
+  const convert = (value: number) => value;
   const format = (value: number) => formatter.format(convert(value));
   const signed = (value: number) => `${value >= 0 ? "+" : "−"}${format(Math.abs(value))}`;
 
-  return { code, rate, converted, convert, format, signed };
+  return { code: "USD", rate: 1, converted: false, convert, format, signed };
+}
+
+/** Secondary CNY label only — never used as primary. Returns null when rate is unusable. */
+export function formatCnyApprox(usdValue: number, rate: number | null | undefined, locale: "zh" | "en" = "zh"): string | null {
+  if (rate === null || rate === undefined || !Number.isFinite(rate) || rate <= 0 || !Number.isFinite(usdValue)) {
+    return null;
+  }
+  const cny = usdValue * rate;
+  const amount = new Intl.NumberFormat(locale === "zh" ? "zh-CN" : "en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(cny);
+  return locale === "zh" ? `约 ¥${amount}` : `≈ ¥${amount}`;
 }

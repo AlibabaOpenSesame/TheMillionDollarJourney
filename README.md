@@ -21,6 +21,15 @@ The production site now runs on Cloudflare Workers with a dedicated D1 database.
 
 The source originates from Sites **version 33**. GitHub **v1.0.0** is the initial archive; subsequent commits add direct Cloudflare deployment. The earlier comprehensive optimization plan is not included.
 
+
+## 展示规则 / Display rules (v1.1.0)
+
+水下阶段（净值 &lt; $10K）看回本；过 $10K 再切百万旅程。
+
+1. **语义色** — 净值 &lt;$10K 时 CURRENT 只用白/浅灰，禁止品牌绿；日涨跌绿/红独立，不绑 CURRENT。
+2. **币种** — 主数字全站 USD；CNY 仅 CURRENT 下一行副标「约 ¥…」；图表 Y 轴跟 USD。
+3. **同步** — 顶栏两枚 chip：`数据 · MM-DD HH:mm` + `需授权自动同步→`。
+
 ## 本地运行 / Run locally
 
 Requires Node.js 22.13+ and npm. Use Node.js 22 LTS for the locked dependencies.

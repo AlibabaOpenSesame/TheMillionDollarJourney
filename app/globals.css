@@ -61,6 +61,13 @@ main:lang(en) h1 { letter-spacing: -.042em; }
 .update-chip { display: inline-flex; align-items: baseline; gap: 7px; padding: 7px 10px; border: 1px solid #b9dfcf; border-radius: 9px; color: #297357; background: #eaf7f1; box-shadow: 0 4px 12px rgba(22, 138, 89, .08); }
 .update-chip span { font-size: var(--text-caption); font-weight: 700; letter-spacing: .08em; }
 .update-chip strong { color: #0f5f42; font: 700 .75rem/1 var(--font-technical); font-variant-numeric: tabular-nums lining-nums; }
+.header-chip-row { position: relative; z-index: 40; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+.data-chip, .sync-chip { position: relative; z-index: 40; display: inline-flex; align-items: baseline; gap: 6px; padding: 7px 11px; border: 1px solid #3b464f; border-radius: 999px; color: #d7dde3; background: rgba(17,20,24,.92); font-size: var(--text-caption); font-weight: 650; line-height: 1.2; box-shadow: 0 8px 20px rgba(0,0,0,.22); }
+.data-chip strong { color: #f3f5f7; font: 700 .75rem/1 var(--font-technical); font-variant-numeric: tabular-nums lining-nums; }
+.sync-chip-cta { cursor: pointer; color: #f3f5f7; border-color: #c7a768; background: linear-gradient(180deg, rgba(199,167,104,.22), rgba(17,20,24,.92)); }
+.sync-chip-cta:hover { border-color: #e0c48a; }
+.sync-chip.sync-error { color: #f0b4b4; border-color: #7a3a3a; }
+.site-header-actions { position: relative; z-index: 40; }
 .update-meta { color: var(--muted); font-size: var(--text-label); line-height: var(--leading-ui); }
 .fx-quote { width: max-content; max-width: 100%; display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin-top: 7px; padding: 6px 9px; border: 1px solid #cfe0f4; border-radius: 8px; color: #416486; background: #f3f8fe; font-size: var(--text-caption); line-height: var(--leading-ui); }
 .fx-quote strong { color: var(--blue-dark); font: 700 .6875rem/1 var(--font-technical); }
@@ -322,7 +329,7 @@ footer p { margin: 0; }
 .journey-dashboard .panel,
 .journey-dashboard .metric-card,
 .journey-dashboard .risk-strip article { border-color: var(--line); background: rgba(17,20,24,.94); box-shadow: 0 18px 55px rgba(0,0,0,.17); }
-.journey-header { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 34px; padding: 0 2px 28px; border-bottom: 1px solid var(--line); }
+.journey-header { position: relative; z-index: 30;  display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 34px; padding: 0 2px 28px; border-bottom: 1px solid var(--line); }
 .journey-identity { min-width: 0; display: flex; align-items: center; gap: 18px; }
 .journey-dashboard .owner-avatar-wrap { width: 78px; height: 78px; padding: 3px; border-color: #3b464f; border-radius: 22px; background: #15191d; box-shadow: 0 12px 28px rgba(0,0,0,.26); }
 .journey-dashboard .owner-avatar { border-radius: 18px; }
@@ -362,7 +369,13 @@ footer p { margin: 0; }
 .journey-route-values > div:last-child { justify-items: end; text-align: right; }
 .journey-route-values span { color: #68727c; font: 650 .5625rem/1 var(--font-technical); letter-spacing: .18em; }
 .journey-route-values strong { color: #d9dde0; font: 540 clamp(.9rem, 1.4vw, 1.18rem)/1 var(--font-technical); letter-spacing: -.035em; }
+.journey-current-value { display: grid; justify-items: center; gap: 4px; }
 .journey-current-value strong { color: var(--green); font-size: clamp(1.15rem, 2vw, 1.7rem); }
+.journey-current-value.underwater strong { color: #e8eaed; }
+.journey-current-value .current-cny-approx { color: #9aa3ad; font: 500 .7rem/1.3 var(--font-technical); }
+.journey-route[data-phase="underwater"] .journey-progress-fill { background: #6b737c; }
+.journey-route[data-phase="underwater"] .journey-progress-marker { border-color: #2a3036; background: #c5ccd3; box-shadow: 0 0 0 1px #9aa3ad, 0 0 18px rgba(197,204,211,.22); }
+.journey-weekly-pulse { margin: 8px 0 0; color: #8f99a3; font: 500 .78rem/1.45 var(--font-ui, inherit); max-width: 36rem; }
 .journey-progress-track { position: relative; height: 104px; margin: 21px 0 0; }
 .journey-progress-rail { position: absolute; right: var(--bull-edge); bottom: 0; left: var(--bull-edge); height: 3px; background: #282f35; }
 .journey-progress-rail::before,
