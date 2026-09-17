@@ -728,3 +728,18 @@ footer p { margin: 0; }
   .journey-target-flare { opacity: 0; }
   .journey-target-flare-complete { opacity: .45; transform: scale(1); }
 }
+
+/* v1.2.0 locale-split */
+.journey-alternate-title.demoted { margin-top: 8px; opacity: .55; font-size: clamp(.62rem, 1vw, .78rem); letter-spacing: .12em; }
+main:lang(zh-CN) .journey-alternate-title.demoted { letter-spacing: .08em; text-transform: none; }
+main:lang(en) .journey-alternate-title.demoted { opacity: .42; }
+.route-labels-zh > div > span { letter-spacing: .08em; opacity: .75; }
+.journey-kpis .kpi-return strong { font-size: clamp(1.6rem, 4vw, 2.4rem); }
+.milestone-status-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.milestone-pill { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 999px; border: 1px solid #3b464f; background: rgba(255,255,255,.04); font-style: normal; font-size: .7rem; letter-spacing: .04em; color: #c5ccd3; white-space: nowrap; }
+.milestone-next .milestone-pill { border-color: #c7a768; color: #e0c48a; }
+.milestone-locked .milestone-pill { opacity: .72; }
+.header-chip-row { max-width: min(100%, 420px); }
+main:lang(en) .data-chip, main:lang(en) .sync-chip { max-width: 220px; white-space: normal; }
+.positions-table th:first-child, .positions-table td:first-child { position: sticky; left: 0; z-index: 1; background: rgba(17,20,24,.96); }
+.contact-grid .social-card { order: -1; }

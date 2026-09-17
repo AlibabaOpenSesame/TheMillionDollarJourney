@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-17
+
+- Locale-split UX: Chinese `/` and English `/en` copy edited independently (no shared calque).
+- Underwater ruler ends show `$current → $10K`; jade-key cloud-bow favicon for Chrome tabs/bookmarks.
+- Demoted bilingual subtitles; EN table header abbreviations; risk strip above holdings; contact leads with X.
+
+
 ## [1.1.0] - 2026-09-17
 
 - Underwater UX: CURRENT stays neutral (white/light gray) below $10K; daily P/L green/red stays independent.
