@@ -836,7 +836,26 @@ main:lang(en) .data-chip, main:lang(en) .sync-chip { max-width: 220px; white-spa
   .data-chip, .sync-chip { font-size: .68rem; padding: 8px 10px; }
 }
 
-main:lang(zh-CN) .language-switch a.active { width: 28px; min-width: 28px; padding: 0; border-radius: 50%; }
+main:lang(zh-CN) .language-switch a.active {
+  width: 28px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  overflow: visible !important;
+}
+.language-switch a .lang-label {
+  display: block;
+  line-height: 1;
+  font-size: 12px;
+}
+main:lang(zh-CN) .language-switch a.active .lang-label {
+  transform: translateY(1.5px);
+}
 
 /* v1.2.1 alignment hard lock */
 button.sync-chip,

@@ -137,9 +137,9 @@ function MetricCard({
 function LanguageSwitch({ locale, copy }: { locale: PortfolioLocale; copy: Copy }) {
   return (
     <nav className="language-switch" aria-label={copy.languageLabel}>
-      <Link href="/" className={locale === "zh" ? "active" : ""} aria-current={locale === "zh" ? "page" : undefined}>{copy.languageZh}</Link>
+      <Link href="/" className={locale === "zh" ? "active" : ""} aria-current={locale === "zh" ? "page" : undefined}><span className="lang-label">{copy.languageZh}</span></Link>
       <span aria-hidden="true">/</span>
-      <Link href="/en" className={locale === "en" ? "active" : ""} aria-current={locale === "en" ? "page" : undefined}>{copy.languageEn}</Link>
+      <Link href="/en" className={locale === "en" ? "active" : ""} aria-current={locale === "en" ? "page" : undefined}><span className="lang-label">{copy.languageEn}</span></Link>
     </nav>
   );
 }
