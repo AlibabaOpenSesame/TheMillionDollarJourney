@@ -878,9 +878,15 @@ button.sync-chip-cta {
 main:lang(zh-CN) .language-switch a.active {
   width: 28px !important;
   min-width: 28px !important;
+  height: 28px !important;
   padding: 0 !important;
   border-radius: 50% !important;
-  /* optical center for SC glyphs */
-  padding-top: 1px !important;
-  padding-bottom: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  font-size: 12px !important;
+  overflow: visible !important;
+  /* CJK glyphs sit high in the em-box — nudge down for optical center */
+  transform: translateY(0.5px);
 }
