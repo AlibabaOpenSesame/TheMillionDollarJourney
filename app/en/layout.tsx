@@ -11,7 +11,10 @@ export const metadata: Metadata = {
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
     shortcut: ["/favicon.ico"],
   },
-  title: "The Million Dollar Journey | Ding Xiaoshan U.S. Public Equity Portfolio",
+  title: {
+    default: "Million Dollar Journey",
+    template: "%s | Million Dollar Journey",
+  },
   description: "From $10,000 to $1,000,000: a public investment journey tracking performance, milestones, holdings, and P&L.",
   openGraph: {
     title: "The Million Dollar Journey",

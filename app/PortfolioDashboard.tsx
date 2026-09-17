@@ -73,6 +73,19 @@ function displayDataChipTime(value: string, locale: PortfolioLocale) {
   return `${get("month")}-${get("day")} ${get("hour")}:${get("minute")}`;
 }
 
+
+function chipTimestamp(account: PortfolioData, locale: PortfolioLocale) {
+  return displayDataChipTime(account.updatedAt || `${account.asOf}T16:00:00-04:00`, locale);
+}
+
+function isSnapshotStale(account: PortfolioData, configured: boolean, lastRun: PortfolioApiResponse["lastRun"]) {
+  if (!configured) return true;
+  if (lastRun?.status === "failed") return true;
+  const asOfMs = Date.parse(`${account.asOf}T20:00:00Z`);
+  if (!Number.isFinite(asOfMs)) return true;
+  return Date.now() - asOfMs > 3 * 24 * 60 * 60 * 1000;
+}
+
 function displaySource(source: string, locale: PortfolioLocale) {
 
   if (locale === "zh") {
@@ -334,7 +347,7 @@ function JourneyHero({ account, journey, locale, copy, money, fx }: { account: P
           <span className="journey-sequence">INVESTMENT JOURNEY · 001</span>
           <h1 id="journey-title">{copy.title}</h1>
           <p className={`journey-alternate-title demoted`}>{copy.journey.alternateTitle}</p>
-          <p className="journey-weekly-pulse">{copy.journey.weeklyPulse}</p>
+          <p className="journey-weekly-pulse">{copy.journey.weeklyPulse(formatJourneyUsd(Math.max(journey.remainingToStart, 0)))}</p>
         </div>
         <div className="journey-manifesto"><strong>{copy.journey.route}</strong><span>{copy.journey.motto}</span></div>
       </div>
@@ -416,6 +429,8 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
   const [account, setAccount] = useState<PortfolioData>(verifiedFallbackPortfolio);
   const [fx, setFx] = useState<FxQuote | null>(null);
   const [syncView, setSyncView] = useState<SyncView>({ kind: "fallback", label: copy.sync.initial });
+  const [showSnapshot, setShowSnapshot] = useState(true);
+  const [syncConfigured, setSyncConfigured] = useState(false);
   const [chartPeriod, setChartPeriod] = useState<ChartPeriod>("7D");
   const [pnlPeriod, setPnlPeriod] = useState<PnlPeriod>("90D");
   const [theme, setTheme] = useState<TimeTheme>("night");
@@ -437,19 +452,23 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
       })
       .then((data) => {
         setFx(data.fx ?? null);
+        setSyncConfigured(Boolean(data.configured));
         if (data.portfolio) {
           setAccount(data.portfolio);
+          setShowSnapshot(isSnapshotStale(data.portfolio, Boolean(data.configured), data.lastRun));
           if (!data.configured) {
-            setSyncView({ kind: "fallback", label: copy.sync.waiting });
+            setSyncView({ kind: "fallback", label: copy.sync.connectCta, detail: copy.sync.connectHint });
           } else if (data.lastRun?.status === "failed") {
             setSyncView({ kind: "error", label: copy.sync.failed, detail: data.lastRun.error ?? undefined });
           } else {
             setSyncView({ kind: "live", label: copy.sync.automatic });
           }
         } else if (data.configured) {
+          setShowSnapshot(true);
           setSyncView({ kind: "pending", label: copy.sync.pending });
         } else {
-          setSyncView({ kind: "fallback", label: copy.sync.waiting });
+          setShowSnapshot(true);
+          setSyncView({ kind: "fallback", label: copy.sync.connectCta, detail: copy.sync.connectHint });
         }
       })
       .catch((error) => {
@@ -486,10 +505,14 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
               <div className="product-mark"><span>IB</span> {copy.productLabel}</div>
               <strong>{copy.subtitle}</strong>
               <div className="header-chip-row" aria-label={copy.latestRefresh}>
-                <span className="data-chip"><span>{copy.sync.dataChip}</span><strong>· {displayDataChipTime(account.updatedAt, locale)}</strong></span>
-                {(syncView.kind === "fallback" || syncView.kind === "pending" || syncView.kind === "error") ? (
-                  <button type="button" className={`sync-chip sync-chip-cta sync-${syncView.kind}`} title={syncView.detail ?? copy.sync.authorizeCta}>
-                    {syncView.kind === "error" ? syncView.label : copy.sync.authorizeCta}
+                <span className="data-chip">
+                  <span>{copy.sync.dataChip}</span>
+                  <strong>· {chipTimestamp(account, locale)}</strong>
+                  {showSnapshot ? <em className="snapshot-badge">{copy.sync.snapshotBadge}</em> : null}
+                </span>
+                {!syncConfigured || syncView.kind === "fallback" || syncView.kind === "pending" || syncView.kind === "error" ? (
+                  <button type="button" className={`sync-chip sync-chip-cta sync-${syncView.kind}`} title={syncView.detail ?? copy.sync.connectHint}>
+                    {syncView.kind === "error" ? syncView.label : (syncConfigured ? copy.sync.authorizeCta : copy.sync.connectCta)}
                   </button>
                 ) : (
                   <span className={`sync-chip sync-${syncView.kind}`} title={syncView.detail}>{syncView.label}</span>

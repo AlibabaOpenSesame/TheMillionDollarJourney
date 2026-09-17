@@ -15,7 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const socialImage = `${origin}/og.png`;
 
   return {
-    title: "百万美元之路｜丁小山美股公开投资",
+    title: {
+      default: "百万美元之路",
+      template: "%s｜百万美元之路",
+    },
     description: "从 10,000 美元到 1,000,000 美元：丁小山的公开投资旅程、净值曲线、里程碑、持仓与盈亏记录。",
     icons: {
       icon: [
