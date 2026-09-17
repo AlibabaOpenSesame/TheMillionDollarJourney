@@ -837,3 +837,50 @@ main:lang(en) .data-chip, main:lang(en) .sync-chip { max-width: 220px; white-spa
 }
 
 main:lang(zh-CN) .language-switch a.active { width: 28px; min-width: 28px; padding: 0; border-radius: 50%; }
+
+/* v1.2.1 alignment hard lock */
+button.sync-chip,
+button.sync-chip-cta {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  box-sizing: border-box;
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  padding: 0 12px !important;
+  line-height: 1 !important;
+  vertical-align: middle;
+}
+.header-chip-row { align-items: center !important; }
+.data-chip, .sync-chip { height: 32px !important; min-height: 32px !important; max-height: 32px !important; align-items: center !important; line-height: 1 !important; }
+.journey-key-link { overflow: visible !important; padding: 0; }
+.journey-key-mark { object-fit: contain !important; object-position: center !important; }
+.language-switch { height: 32px !important; align-items: center !important; }
+.language-switch a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  font-size: 12px !important;
+}
+.language-switch a.active {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  line-height: 1 !important;
+  font-size: 12px !important;
+  overflow: visible !important;
+}
+main:lang(zh-CN) .language-switch a.active {
+  width: 28px !important;
+  min-width: 28px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  /* optical center for SC glyphs */
+  padding-top: 1px !important;
+  padding-bottom: 0 !important;
+}
