@@ -7,6 +7,7 @@
 - Locale-split UX: Chinese `/` and English `/en` copy edited independently (no shared calque).
 - Underwater ruler ends show `$current → $10K`; jade-key cloud-bow favicon for Chrome tabs/bookmarks.
 - Demoted bilingual subtitles; EN table header abbreviations; risk strip above holdings; contact leads with X.
+- Responsive: 1200 / 768–1199 / ≤767 / ≤390 — chips above key, underwater ruler, sticky holdings cols, 44px touch targets.
 
 
 ## [1.1.0] - 2026-09-17
