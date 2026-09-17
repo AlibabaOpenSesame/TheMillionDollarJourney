@@ -10,7 +10,7 @@ import {
   verifiedFallbackPortfolio,
 } from "./portfolio-data";
 import { portfolioCopy, PortfolioLocale } from "./portfolio-copy";
-import { createMoneyView, MoneyView } from "./currency";
+import { createMoneyView, formatCnyApprox, MoneyView } from "./currency";
 import { calculateJourneyMetrics, JourneyMetrics } from "./journey";
 
 type ChartPeriod = "7D" | "1M" | "YTD";
@@ -58,7 +58,23 @@ function displaySyncTime(value: string, locale: PortfolioLocale) {
   return locale === "zh" ? formatted.replaceAll("/", "-") : formatted;
 }
 
+function displayDataChipTime(value: string, locale: PortfolioLocale) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Shanghai",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(date);
+  const get = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
+  return `${get("month")}-${get("day")} ${get("hour")}:${get("minute")}`;
+}
+
 function displaySource(source: string, locale: PortfolioLocale) {
+
   if (locale === "zh") {
     return source
       .replace("IBKR connected account history", "IBKR 已连接账户历史")
@@ -301,11 +317,14 @@ function JourneyBullMarker({ completed }: { completed: boolean }) {
   );
 }
 
-function JourneyHero({ account, journey, locale, copy, money }: { account: PortfolioData; journey: JourneyMetrics; locale: PortfolioLocale; copy: Copy; money: MoneyView }) {
-  const progressPercent = journey.progress * 100;
+function JourneyHero({ account, journey, locale, copy, money, fx }: { account: PortfolioData; journey: JourneyMetrics; locale: PortfolioLocale; copy: Copy; money: MoneyView; fx: FxQuote | null }) {
+  const underwater = journey.currentValue < 10_000;
   const remainingLabel = journey.remainingToStart > 0
     ? copy.journey.remainingToStart(formatJourneyUsd(journey.remainingToStart))
     : copy.journey.remainingToTarget(formatJourneyUsd(journey.remainingToTarget));
+  const cnyApprox = formatCnyApprox(journey.currentValue, fx?.rate ?? null, locale);
+  // Underwater: break-even ruler only — do not drive the bar with journey.progress (stays 0% below $10K).
+  const rulerProgress = underwater ? 0 : journey.progress * 100;
   return (
     <section className="journey-hero" aria-labelledby="journey-title">
       <div className="journey-hero-heading">
@@ -313,30 +332,42 @@ function JourneyHero({ account, journey, locale, copy, money }: { account: Portf
           <span className="journey-sequence">INVESTMENT JOURNEY · 001</span>
           <h1 id="journey-title">{copy.title}</h1>
           <p className="journey-alternate-title">{copy.journey.alternateTitle}</p>
+          <p className="journey-weekly-pulse">{copy.journey.weeklyPulse}</p>
         </div>
         <div className="journey-manifesto"><strong>{copy.journey.route}</strong><span>{copy.journey.motto}</span></div>
       </div>
 
-      <div className="journey-route" style={{ "--journey-progress": `${progressPercent}%` } as CSSProperties}>
+      <div className="journey-route" data-phase={underwater ? "underwater" : "journey"} style={{ "--journey-progress": `${rulerProgress}%` } as CSSProperties}>
         <div className="journey-route-values">
           <div><span>START</span><strong>$10,000</strong></div>
-          <div className="journey-current-value"><span>CURRENT</span><strong>{formatJourneyUsd(journey.currentValue)}</strong></div>
+          <div className={`journey-current-value${underwater ? " underwater" : ""}`}>
+            <span>CURRENT</span>
+            <strong>{formatJourneyUsd(journey.currentValue)}</strong>
+            {cnyApprox ? <small className="current-cny-approx">{cnyApprox}</small> : null}
+          </div>
           <div><span>TARGET</span><strong>$1,000,000</strong></div>
         </div>
-        <div className="journey-progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Number(progressPercent.toFixed(2))} aria-label={copy.journey.progress}>
+        <div className="journey-progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Number(rulerProgress.toFixed(2))} aria-label={remainingLabel}>
           <span className="journey-progress-rail">
             <span className="journey-progress-fill" />
             <span className="journey-progress-marker" />
-            <JourneyBullMarker key={progressPercent.toFixed(4)} completed={journey.progress >= 1} />
+            <JourneyBullMarker key={rulerProgress.toFixed(4)} completed={!underwater && journey.progress >= 1} />
           </span>
         </div>
         <div className="journey-progress-labels"><span>$10K</span><span>{remainingLabel}</span><span>$1M</span></div>
       </div>
 
       <div className="journey-kpis">
-        <article><span>{copy.journey.currentPortfolio}</span><strong>{formatJourneyUsd(journey.currentValue)}</strong><small>{locale === "zh" && money.code === "CNY" ? `${copy.journey.cnyReference} ${money.format(account.netLiquidation)}` : `${account.asOf} · USD`}</small></article>
-        <article><span>{copy.journey.totalReturn}</span><strong className={journey.totalReturn >= 0 ? "positive" : "negative"}>{percent(journey.totalReturn, 1)}</strong><small>{copy.journey.usdBasis}</small></article>
-        <article><span>{copy.journey.progress}</span><strong>{progressPercent.toFixed(2)}%</strong><small>{remainingLabel}</small></article>
+        <article>
+          <span>{copy.journey.currentPortfolio}</span>
+          <strong>{formatJourneyUsd(journey.currentValue)}</strong>
+          <small>{cnyApprox ?? `${account.asOf} · USD`}</small>
+        </article>
+        <article>
+          <span>{copy.journey.totalReturn}</span>
+          <strong className={journey.totalReturn >= 0 ? "positive" : "negative"}>{percent(journey.totalReturn, 1)}</strong>
+          <small>{copy.journey.usdBasis}</small>
+        </article>
       </div>
     </section>
   );
@@ -396,7 +427,7 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
 
   useEffect(() => {
     const controller = new AbortController();
-    const portfolioUrl = locale === "zh" ? "/api/portfolio?displayCurrency=CNY" : "/api/portfolio";
+    const portfolioUrl = "/api/portfolio";
     fetch(portfolioUrl, { cache: "no-store", signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("Portfolio API unavailable");
@@ -452,10 +483,16 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
             <div className="journey-identity-copy">
               <div className="product-mark"><span>IB</span> {copy.productLabel}</div>
               <strong>{copy.subtitle}</strong>
-              <p className="update-line">
-                <span className="update-chip"><span>{copy.latestRefresh}</span><strong>{displaySyncTime(account.updatedAt, locale)}</strong></span>
-                <span className="update-meta">{copy.closeData}: {account.asOf} · {copy.baseCurrency} {money.code}</span>
-              </p>
+              <div className="header-chip-row" aria-label={copy.latestRefresh}>
+                <span className="data-chip"><span>{copy.sync.dataChip}</span><strong>· {displayDataChipTime(account.updatedAt, locale)}</strong></span>
+                {(syncView.kind === "fallback" || syncView.kind === "pending" || syncView.kind === "error") ? (
+                  <button type="button" className={`sync-chip sync-chip-cta sync-${syncView.kind}`} title={syncView.detail ?? copy.sync.authorizeCta}>
+                    {syncView.kind === "error" ? syncView.label : copy.sync.authorizeCta}
+                  </button>
+                ) : (
+                  <span className={`sync-chip sync-${syncView.kind}`} title={syncView.detail}>{syncView.label}</span>
+                )}
+              </div>
             </div>
           </div>
           <Link className="journey-key-link" href="/jade-key" aria-label={copy.keyLogoLabel} title={copy.keyLogoLabel}>
@@ -463,11 +500,10 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
           </Link>
           <div className="site-header-actions">
             <LanguageSwitch locale={locale} copy={copy} />
-            <div className={`sync-status sync-${syncView.kind}`} title={syncView.detail}><span className="status-dot" /> {syncView.label}</div>
           </div>
         </header>
 
-        <JourneyHero account={account} journey={journey} locale={locale} copy={copy} money={money} />
+        <JourneyHero account={account} journey={journey} locale={locale} copy={copy} money={money} fx={fx} />
         <MilestoneRoadmap journey={journey} locale={locale} copy={copy} />
 
         {locale === "zh" && (

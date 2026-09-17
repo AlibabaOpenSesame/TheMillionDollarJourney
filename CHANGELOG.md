@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-17
+
+- Underwater UX: CURRENT stays neutral (white/light gray) below $10K; daily P/L green/red stays independent.
+- USD is the primary currency sitewide; CNY appears only as a secondary `约 ¥…` line under CURRENT.
+- Top bar uses two chips: `数据 · MM-DD HH:mm` and `需授权自动同步→`.
+- First screen keeps the break-even ruler (`回本 · 还差 $X`), drops journey-progress %, and adds a weekly pulse line.
+
+
 - Deploy directly to Cloudflare Workers and dedicated D1 at openinvestai.com.
 - Add www-to-apex redirect, daily 07:30 Beijing cron and dual hosting build targets.
 - Add complete D1-compatible export file generation and production deployment documentation.

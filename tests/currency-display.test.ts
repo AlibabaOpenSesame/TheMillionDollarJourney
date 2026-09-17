@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createMoneyView } from "../app/currency.ts";
+import { createMoneyView, formatCnyApprox } from "../app/currency.ts";
 import { parseTwelveDataRate, resolveUsdCnyRate, type StoredFxRate } from "../worker/fx.ts";
 
 const cachedRate: StoredFxRate = {
@@ -11,18 +11,25 @@ const cachedRate: StoredFxRate = {
   source: "Twelve Data",
 };
 
-test("converts every Chinese monetary value to CNY while English remains USD", () => {
+test("keeps USD as the primary currency for both Chinese and English", () => {
   const quote = { ...cachedRate, status: "live" as const };
   const chinese = createMoneyView("zh", quote);
   const english = createMoneyView("en", quote);
 
-  assert.equal(chinese.code, "CNY");
-  assert.equal(chinese.convert(100), 720);
-  assert.equal(chinese.format(100), "¥720.00");
-  assert.equal(chinese.signed(-10), "−¥72.00");
+  assert.equal(chinese.code, "USD");
+  assert.equal(chinese.convert(100), 100);
+  assert.equal(chinese.format(100), "$100.00");
+  assert.equal(chinese.signed(-10), "−$10.00");
   assert.equal(english.code, "USD");
   assert.equal(english.convert(100), 100);
   assert.equal(english.format(100), "$100.00");
+});
+
+test("exposes CNY only as a secondary approx label", () => {
+  assert.equal(formatCnyApprox(100, 7.2, "zh"), "约 ¥720.00");
+  assert.equal(formatCnyApprox(100, 7.2, "en"), "≈ ¥720.00");
+  assert.equal(formatCnyApprox(100, null, "zh"), null);
+  assert.equal(formatCnyApprox(100, 0, "zh"), null);
 });
 
 test("falls back to explicit USD formatting when no valid CNY rate exists", () => {
