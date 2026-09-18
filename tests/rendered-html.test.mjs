@@ -21,8 +21,8 @@ test("v1.4.3 locale UX acceptance", async () => {
   assert.match(dashboard, /\$10,000/);
   assert.match(dashboard, /weeklyPulse\(/);
   assert.match(css, /snapshot-badge/);
-  assert.match(pkg, /"version": "1.4.1"/);
-  assert.match(wrangler, /"version": "1.4.1"/);
+  assert.match(pkg, /"version": "1.4.3"/);
+  assert.match(wrangler, /"version": "1.4.3"/);
   assert.match(layout, /favicon\.ico/);
   assert.match(layout, /icon-light-32/);
   assert.match(layout, /prefers-color-scheme/);
