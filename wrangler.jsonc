@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "the-million-dollar-journey",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "account_id": "3ce0c0f7a0ed9393bb71f22156f1fdda",
   "main": "worker/index.ts",
   "compatibility_date": "2026-05-15",
