@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.2 — Favicon vertical full key
+
+- Full `cloud-jade-key-mark-v3` rotated 90° CW (head up, teeth down) on solid `#000`
+- ~65% content / ≥17% margin; `favicon.ico` 16/32/48 + icon-32/192 + apple-touch 180
+- Jade-key page untouched
+
 ## 1.4.1 — Favicon complete jade cloud head
 
 - Crop left jade-cloud head from `cloud-jade-key-mark-v3`, scale to ~72% on black square, ≥14% margin (gold frame fully visible)

@@ -4,7 +4,7 @@ import test from "node:test";
 
 const root = new URL("../", import.meta.url);
 
-test("v1.4.1 locale UX acceptance", async () => {
+test("v1.4.2 locale UX acceptance", async () => {
   const [copy, dashboard, css, pkg, wrangler, layout] = await Promise.all([
     readFile(new URL("app/portfolio-copy.ts", root), "utf8"),
     readFile(new URL("app/PortfolioDashboard.tsx", root), "utf8"),
