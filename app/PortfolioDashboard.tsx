@@ -12,7 +12,7 @@ import {
 import type { LoadedPortfolio } from "./load-portfolio";
 import { portfolioCopy, PortfolioLocale } from "./portfolio-copy";
 import { createMoneyView, formatCnyApprox, MoneyView } from "./currency";
-import { calculateJourneyMetrics, JourneyMetrics } from "./journey";
+import { JOURNEY_START_VALUE, calculateJourneyMetrics, JourneyMetrics } from "./journey";
 
 type ChartPeriod = "7D" | "1M" | "YTD";
 type PnlPeriod = "7D" | "30D" | "90D" | "MTD" | "YTD";
@@ -332,15 +332,21 @@ function JourneyBullMarker({ completed }: { completed: boolean }) {
 }
 
 function JourneyHero({ account, journey, locale, copy, money, fx }: { account: PortfolioData; journey: JourneyMetrics; locale: PortfolioLocale; copy: Copy; money: MoneyView; fx: FxQuote | null }) {
-  const underwater = journey.currentValue < 10_000;
-  const remainingLabel = journey.remainingToStart > 0
+  const underwater = journey.currentValue < JOURNEY_START_VALUE;
+  const nextStop = journey.nextMilestoneValue != null ? formatJourneyUsd(journey.nextMilestoneValue) : "$1M";
+  const remainingLabel = underwater
     ? copy.journey.remainingToStart(formatJourneyUsd(journey.remainingToStart))
-    : copy.journey.remainingToTarget(formatJourneyUsd(journey.remainingToTarget));
+    : journey.nextMilestoneValue != null
+      ? copy.journey.onJourneyNext(nextStop)
+      : copy.journey.remainingToTarget(formatJourneyUsd(journey.remainingToTarget));
+  const weeklyPulse = underwater
+    ? copy.journey.weeklyPulseUnderwater(formatJourneyUsd(journey.remainingToStart))
+    : copy.journey.weeklyPulseOnJourney(nextStop);
   const cnyApprox = formatCnyApprox(journey.currentValue, fx?.rate ?? null, locale);
   const currentSecondary = cnyApprox ?? (locale === "zh" ? copy.fx.unavailableUnderCurrent : null);
   const rulerProgress = underwater ? 0 : journey.progress * 100;
-  const leftEnd = underwater ? formatJourneyUsd(journey.currentValue) : "$10K";
-  const rightEnd = underwater ? "$10K" : "$1M";
+  const leftEnd = underwater ? formatJourneyUsd(journey.currentValue) : "$1K";
+  const rightEnd = underwater ? "$1K" : "$1M";
   return (
     <section className="journey-hero" aria-labelledby="journey-title">
       <div className="journey-hero-heading">
@@ -348,20 +354,20 @@ function JourneyHero({ account, journey, locale, copy, money, fx }: { account: P
           <span className="journey-sequence">INVESTMENT JOURNEY · 001</span>
           <h1 id="journey-title">{copy.title}</h1>
           <p className={`journey-alternate-title demoted`}>{copy.journey.alternateTitle}</p>
-          <p className="journey-weekly-pulse">{copy.journey.weeklyPulse(formatJourneyUsd(Math.max(journey.remainingToStart, 0)))}</p>
+          <p className="journey-weekly-pulse">{weeklyPulse}</p>
         </div>
         <div className="journey-manifesto"><strong>{copy.journey.route}</strong><span>{copy.journey.motto}</span></div>
       </div>
 
       <div className="journey-route" data-phase={underwater ? "underwater" : "journey"} data-locale={locale} style={{ "--journey-progress": `${rulerProgress}%` } as CSSProperties}>
         <div className={`journey-route-values${locale === "zh" ? " route-labels-zh" : ""}`}>
-          <div><span>{copy.journey.routeStart}</span><strong>$10,000</strong></div>
+          <div><span>{copy.journey.routeStart}</span><strong>$1,000</strong></div>
           <div className={`journey-current-value${underwater ? " underwater" : ""}`}>
             <span>{copy.journey.routeCurrent}</span>
             <strong>{formatJourneyUsd(journey.currentValue)}</strong>
             {currentSecondary ? <small className="current-cny-approx">{currentSecondary}</small> : null}
           </div>
-          <div><span>{copy.journey.routeTarget}</span><strong>{underwater ? "$10,000" : "$1,000,000"}</strong></div>
+          <div><span>{copy.journey.routeTarget}</span><strong>{underwater ? "$1,000" : "$1,000,000"}</strong></div>
         </div>
         <div className="journey-progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Number(rulerProgress.toFixed(2))} aria-label={remainingLabel}>
           <span className="journey-progress-rail">
