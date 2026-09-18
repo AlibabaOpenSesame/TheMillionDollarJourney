@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import PortfolioDashboard from "./PortfolioDashboard";
 import { loadPortfolio } from "./load-portfolio";
 

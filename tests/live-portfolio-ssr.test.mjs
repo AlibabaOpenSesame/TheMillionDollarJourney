@@ -13,8 +13,10 @@ test("SSR pages load live portfolio before render", async () => {
     readFile(new URL("app/portfolio-copy.ts", root), "utf8"),
     readFile(new URL("package.json", root), "utf8"),
   ]);
+  assert.match(zh, /force-dynamic/);
   assert.match(zh, /loadPortfolio/);
   assert.match(zh, /async function Home/);
+  assert.match(en, /force-dynamic/);
   assert.match(en, /loadPortfolio/);
   assert.match(en, /async function EnglishDashboard/);
   assert.match(loader, /\/api\/portfolio/);
@@ -24,7 +26,7 @@ test("SSR pages load live portfolio before render", async () => {
   assert.match(dashboard, /notLiveBadge/);
   assert.match(copy, /notLiveBadge: "非实时"/);
   assert.match(copy, /notLiveBadge: "Not live"/);
-  assert.match(pkg, /"version": "1\.5\.0"/);
+  assert.match(pkg, /"version": "1.5.1"/);
   assert.doesNotMatch(zh, /verifiedFallbackPortfolio/);
   assert.doesNotMatch(en, /verifiedFallbackPortfolio/);
 });

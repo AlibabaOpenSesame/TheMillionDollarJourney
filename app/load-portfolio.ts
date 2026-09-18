@@ -15,20 +15,32 @@ export type LoadedPortfolio = {
   latestScheduledAt: string | null;
 };
 
-const PRODUCTION_ORIGIN = "https://openinvestai.com";
-
-function originFromHeaders(requestHeaders: Headers) {
+function candidatesFromHeaders(requestHeaders: Headers) {
   const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
-  if (!host) return null;
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  return protocol + "://" + host;
+  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host?.startsWith("localhost") ? "http" : "https");
+  const list: string[] = [];
+  if (host) list.push(`${protocol}://${host}`);
+  // Production custom domains as last-resort self fetch targets during SSR.
+  for (const origin of ["https://openinvestai.com", "https://www.openinvestai.com"]) {
+    if (!list.includes(origin)) list.push(origin);
+  }
+  return list;
+}
+
+async function fetchPortfolio(origin: string, displayCurrency: "USD" | "CNY") {
+  const url = new URL("/api/portfolio", origin);
+  if (displayCurrency === "CNY") url.searchParams.set("displayCurrency", "CNY");
+  const response = await fetch(url, {
+    cache: "no-store",
+    headers: { accept: "application/json" },
+  });
+  if (!response.ok) throw new Error(`Portfolio API HTTP ${response.status}`);
+  return (await response.json()) as PortfolioApiResponse;
 }
 
 /** Server-side portfolio load for first paint. Live API wins; fallback only on failure/empty. */
 export async function loadPortfolio(displayCurrency: "USD" | "CNY" = "USD"): Promise<LoadedPortfolio> {
   const requestHeaders = await headers();
-  // Workers SSR often lacks Host; always fall back to the public production origin.
-  const origin = originFromHeaders(requestHeaders) ?? PRODUCTION_ORIGIN;
   const emptyMeta = {
     configured: false,
     lastRun: null as PortfolioApiResponse["lastRun"],
@@ -37,49 +49,35 @@ export async function loadPortfolio(displayCurrency: "USD" | "CNY" = "USD"): Pro
     latestScheduledAt: null as string | null,
   };
 
-  const tryFetch = async (base: string) => {
-    const url = new URL("/api/portfolio", base);
-    if (displayCurrency === "CNY") url.searchParams.set("displayCurrency", "CNY");
-    const response = await fetch(url, {
-      cache: "no-store",
-      headers: { accept: "application/json" },
-    });
-    if (!response.ok) throw new Error("Portfolio API HTTP " + response.status);
-    return (await response.json()) as PortfolioApiResponse;
-  };
-
-  try {
-    let data: PortfolioApiResponse;
+  let lastError: unknown = null;
+  for (const origin of candidatesFromHeaders(requestHeaders)) {
     try {
-      data = await tryFetch(origin);
-    } catch (firstError) {
-      if (origin !== PRODUCTION_ORIGIN) {
-        data = await tryFetch(PRODUCTION_ORIGIN);
-      } else {
-        throw firstError;
+      const data = await fetchPortfolio(origin, displayCurrency);
+      if (!data.portfolio) {
+        return {
+          portfolio: verifiedFallbackPortfolio,
+          usingFallback: true,
+          configured: Boolean(data.configured),
+          lastRun: data.lastRun,
+          fx: data.fx ?? null,
+          syncTriggered: Boolean(data.syncTriggered),
+          latestScheduledAt: data.latestScheduledAt ?? null,
+        };
       }
-    }
-    if (!data.portfolio) {
       return {
-        portfolio: verifiedFallbackPortfolio,
-        usingFallback: true,
+        portfolio: data.portfolio,
+        usingFallback: false,
         configured: Boolean(data.configured),
         lastRun: data.lastRun,
         fx: data.fx ?? null,
         syncTriggered: Boolean(data.syncTriggered),
         latestScheduledAt: data.latestScheduledAt ?? null,
       };
+    } catch (error) {
+      lastError = error;
     }
-    return {
-      portfolio: data.portfolio,
-      usingFallback: false,
-      configured: Boolean(data.configured),
-      lastRun: data.lastRun,
-      fx: data.fx ?? null,
-      syncTriggered: Boolean(data.syncTriggered),
-      latestScheduledAt: data.latestScheduledAt ?? null,
-    };
-  } catch {
-    return { portfolio: verifiedFallbackPortfolio, usingFallback: true, ...emptyMeta };
   }
+
+  console.error("loadPortfolio fallback", lastError);
+  return { portfolio: verifiedFallbackPortfolio, usingFallback: true, ...emptyMeta };
 }

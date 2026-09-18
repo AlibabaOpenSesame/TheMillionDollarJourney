@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.1 — Force dynamic live first paint
+
+- Mark `/` and `/en` `force-dynamic` so SSR does not bake fallback at build time
+- Harden `loadPortfolio` origin candidates for Worker self-fetch
+
 ## 1.5.0 — Live portfolio first paint
 
 - ZH `/` and EN `/en` SSR load live `/api/portfolio` for first paint (NAV / positions / asOf)
