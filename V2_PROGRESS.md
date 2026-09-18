@@ -36,3 +36,11 @@
 First coherent preview available at localhost:3001. Isolated local D1 migrations 0000–0004 applied. 8 new domain/provider/session tests pass; TypeScript check passes. The inherited Drizzle metadata omitted previously applied 0002/0003 changes: the new, unapplied 0004 migration was reviewed and duplicate trades/trigger statements removed; old migrations were not changed.
 
 Backend quote collection, read-only API, locks and session lifecycle are implemented but still need integration verification. No v2 site has been published. Credentials and real quote entitlement remain to be validated; do not mark completion until deployment and full requirement audit succeed.
+
+## 2026-09-18 continuation evidence
+- Fixed session sealing to use the oldest contributing quote timestamp rather than receipt time. Sealed/incomplete sessions and out-of-order observations cannot be overwritten by the domain reducer.
+- Unit tests: 19/19 passed. TypeScript check and Sites production build passed.
+- Browser: Chinese and English render; 390px English viewport has document width 390px (no page overflow); all five image assets loaded. 1D honestly shows no samples, ALL renders actual history. Captured browser error log was empty.
+- Local independent database: bootstrap imported 196 snapshots and 18 historical position rows; repeat bootstrap is idempotent. Unauthorized sync returns 401.
+- GitHub transport diagnosis: Git was not using the configured system HTTP proxy. Explicit per-command use of the existing proxy successfully read remote main without changing global network settings.
+- Remaining acceptance: all metric provenance surfaces, intraday chart keyboard/time-axis polish, DB-level concurrency/provider integration, real credential/entitlement setup, and hosted data collection. These are not claimed complete.

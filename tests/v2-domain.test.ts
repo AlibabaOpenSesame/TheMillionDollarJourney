@@ -58,6 +58,14 @@ test("provider parser rejects mismatch, missing price and future timestamp", () 
   assert.throws(() => parseQuote({ ...raw, close: null }, "TEM", now.toISOString(), "unknown"));
   assert.throws(() => parseQuote({ ...raw, timestamp: raw.timestamp + 3600 }, "TEM", now.toISOString(), "unknown"));
 });
+test("late receipts cannot turn delayed close quotes into complete sessions", () => {
+  const session = evolveSession(null, "2026-09-18", 100, "2026-09-17", "2026-09-18T19:40:00Z", 1);
+  const sealed = sealSession(session, new Date("2026-09-18T20:01:00Z"));
+  assert.equal(sealed.status, "INCOMPLETE");
+  assert.equal(evolveSession(sealed, sealed.date, 120, sealed.snapshotDate, "2026-09-18T20:02:00Z", 1), sealed);
+  assert.equal(evolveSession(session, session.date, 90, session.snapshotDate, "2026-09-18T19:35:00Z", 1), session);
+  assert.equal(sealSession({ ...session, updatedAt: "2026-09-18T20:05:00Z" }, new Date("2026-09-18T20:10:00Z")).status, "INCOMPLETE");
+});
 test("provider partial failure preserves coverage and never leaks credentials into the URL", async () => {
   const fake = (async (input: URL | RequestInfo, options?: RequestInit) => {
     const url = String(input); assert.ok(!url.includes("secret")); assert.ok(options?.signal);

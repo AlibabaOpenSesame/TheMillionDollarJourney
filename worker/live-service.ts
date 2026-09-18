@@ -81,7 +81,7 @@ export async function refreshMarket(env: LiveEnv, now = new Date()) {
       const exists = await env.DB.prepare("SELECT id FROM valuation_samples WHERE id=?").bind(sampleId).first();
       if (!exists) {
         const previousSession = await env.DB.prepare(`${sessionSelect} WHERE date=?`).bind(market.date).first<Session>();
-        const session = evolveSession(previousSession, market.date, estimate.value, portfolio.asOf, now.toISOString(), events.length + 1);
+        const session = evolveSession(previousSession, market.date, estimate.value, portfolio.asOf, estimate.quotedAt, events.length + 1);
         events.push({ id: `valuation:${sampleId}`, occurredAt: now.toISOString(), kind: "valuation", symbol: null, value: estimate.value, previousValue: previousSession?.current ?? null, source: "IBKR holdings + Twelve Data", detail: `Estimated portfolio value · ${estimate.state.toLowerCase()}` });
         statements.push(env.DB.prepare("INSERT OR IGNORE INTO valuation_samples (id,session_date,time,value,snapshot_date,state) VALUES (?,?,?,?,?,?)").bind(sampleId,market.date,estimate.quotedAt,estimate.value,portfolio.asOf,estimate.state));
         statements.push(env.DB.prepare(`INSERT INTO portfolio_sessions (date,opening_nav,current,high,low,events,status,started_at,updated_at,sealed_at,snapshot_date,coverage) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(date) DO UPDATE SET current=excluded.current,high=excluded.high,low=excluded.low,events=excluded.events,updated_at=excluded.updated_at WHERE portfolio_sessions.status='RUNNING'`).bind(session.date,session.openingNav,session.current,session.high,session.low,session.events,session.status,session.startedAt,session.updatedAt,session.sealedAt,session.snapshotDate,session.coverage));
