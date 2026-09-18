@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.0 — Live portfolio first paint
+
+- ZH `/` and EN `/en` SSR load live `/api/portfolio` for first paint (NAV / positions / asOf)
+- Bundled `verifiedFallbackPortfolio` only when live read fails/empty; UI shows **非实时** / **Not live**
+- Client still refreshes via `/api/portfolio`; no layout redesign
+
 ## 1.4.3 — Favicon head-down + system backgrounds
 
 - Full mark-v3 rotated 90° CCW (jade head down, teeth up)

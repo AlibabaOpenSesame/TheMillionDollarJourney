@@ -1,5 +1,7 @@
 import PortfolioDashboard from "./PortfolioDashboard";
+import { loadPortfolio } from "./load-portfolio";
 
-export default function Home() {
-  return <PortfolioDashboard locale="zh" />;
+export default async function Home() {
+  const initial = await loadPortfolio("CNY");
+  return <PortfolioDashboard locale="zh" initial={initial} />;
 }

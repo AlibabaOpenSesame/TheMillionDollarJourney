@@ -9,6 +9,7 @@ import {
   PortfolioPosition,
   verifiedFallbackPortfolio,
 } from "./portfolio-data";
+import type { LoadedPortfolio } from "./load-portfolio";
 import { portfolioCopy, PortfolioLocale } from "./portfolio-copy";
 import { createMoneyView, formatCnyApprox, MoneyView } from "./currency";
 import { calculateJourneyMetrics, JourneyMetrics } from "./journey";
@@ -424,13 +425,46 @@ function PositionRows({ positions, account, copy, money }: { positions: Portfoli
   ));
 }
 
-export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale }) {
+
+function initialSyncState(locale: PortfolioLocale, copy: Copy, initial: LoadedPortfolio) {
+  if (initial.usingFallback) {
+    return {
+      syncView: { kind: "fallback" as const, label: copy.sync.fallback, detail: copy.sync.notLiveHint },
+      showSnapshot: true,
+      syncConfigured: initial.configured,
+    };
+  }
+  const showSnapshot = isSnapshotStale(initial.portfolio, initial.configured, initial.lastRun);
+  if (!initial.configured) {
+    return {
+      syncView: { kind: "fallback" as const, label: copy.sync.connectCta, detail: copy.sync.connectHint },
+      showSnapshot: true,
+      syncConfigured: false,
+    };
+  }
+  if (initial.lastRun?.status === "failed") {
+    return {
+      syncView: { kind: "error" as const, label: copy.sync.failed, detail: initial.lastRun.error ?? undefined },
+      showSnapshot,
+      syncConfigured: true,
+    };
+  }
+  return {
+    syncView: { kind: "live" as const, label: copy.sync.automatic },
+    showSnapshot,
+    syncConfigured: true,
+  };
+}
+
+export default function PortfolioDashboard({ locale, initial }: { locale: PortfolioLocale; initial: LoadedPortfolio }) {
   const copy = portfolioCopy[locale];
-  const [account, setAccount] = useState<PortfolioData>(verifiedFallbackPortfolio);
-  const [fx, setFx] = useState<FxQuote | null>(null);
-  const [syncView, setSyncView] = useState<SyncView>({ kind: "fallback", label: copy.sync.initial });
-  const [showSnapshot, setShowSnapshot] = useState(true);
-  const [syncConfigured, setSyncConfigured] = useState(false);
+  const boot = initialSyncState(locale, copy, initial);
+  const [account, setAccount] = useState<PortfolioData>(initial.portfolio);
+  const [fx, setFx] = useState<FxQuote | null>(initial.fx);
+  const [syncView, setSyncView] = useState<SyncView>(boot.syncView);
+  const [showSnapshot, setShowSnapshot] = useState(boot.showSnapshot);
+  const [syncConfigured, setSyncConfigured] = useState(boot.syncConfigured);
+  const [usingFallback, setUsingFallback] = useState(initial.usingFallback);
   const [chartPeriod, setChartPeriod] = useState<ChartPeriod>("7D");
   const [pnlPeriod, setPnlPeriod] = useState<PnlPeriod>("90D");
   const [theme, setTheme] = useState<TimeTheme>("night");
@@ -455,6 +489,7 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
         setSyncConfigured(Boolean(data.configured));
         if (data.portfolio) {
           setAccount(data.portfolio);
+          setUsingFallback(false);
           setShowSnapshot(isSnapshotStale(data.portfolio, Boolean(data.configured), data.lastRun));
           if (!data.configured) {
             setSyncView({ kind: "fallback", label: copy.sync.connectCta, detail: copy.sync.connectHint });
@@ -468,6 +503,7 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
           setSyncView({ kind: "pending", label: copy.sync.pending });
         } else {
           setShowSnapshot(true);
+          setUsingFallback(true);
           setSyncView({ kind: "fallback", label: copy.sync.connectCta, detail: copy.sync.connectHint });
         }
       })
@@ -476,7 +512,8 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
         if (locale === "zh") {
           setFx({ pair: "USD/CNY", rate: null, quotedAt: null, fetchedAt: null, source: "Twelve Data", status: "unavailable" });
         }
-        setSyncView({ kind: "fallback", label: copy.sync.fallback });
+        setUsingFallback(true);
+        setSyncView({ kind: "fallback", label: copy.sync.fallback, detail: copy.sync.notLiveHint });
       });
     return () => controller.abort();
   }, [copy, locale]);
@@ -508,7 +545,7 @@ export default function PortfolioDashboard({ locale }: { locale: PortfolioLocale
                 <span className="data-chip">
                   <span>{copy.sync.dataChip}</span>
                   <strong>· {chipTimestamp(account, locale)}</strong>
-                  {showSnapshot ? <em className="snapshot-badge">{copy.sync.snapshotBadge}</em> : null}
+                  {usingFallback ? <em className="snapshot-badge snapshot-not-live" title={copy.sync.notLiveHint}>{copy.sync.notLiveBadge}</em> : showSnapshot ? <em className="snapshot-badge">{copy.sync.snapshotBadge}</em> : null}
                 </span>
                 {!syncConfigured || syncView.kind === "fallback" || syncView.kind === "pending" || syncView.kind === "error" ? (
                   <button type="button" className={`sync-chip sync-chip-cta sync-${syncView.kind}`} title={syncView.detail ?? copy.sync.connectHint}>
