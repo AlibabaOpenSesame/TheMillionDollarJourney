@@ -1,6 +1,6 @@
-export const JOURNEY_START_VALUE = 10_000;
+export const JOURNEY_START_VALUE = 1_000;
 export const JOURNEY_TARGET_VALUE = 1_000_000;
-export const JOURNEY_MILESTONE_VALUES = [10_000, 20_000, 50_000, 100_000, 250_000, 500_000, 1_000_000] as const;
+export const JOURNEY_MILESTONE_VALUES = [2_000, 5_000, 10_000, 25_000, 100_000, 500_000, 1_000_000] as const;
 
 export type JourneyNavPoint = { date: string; value: number };
 export type JourneyMilestoneStatus = "achieved" | "next" | "locked";
@@ -18,6 +18,7 @@ export type JourneyMetrics = {
   progress: number;
   remainingToStart: number;
   remainingToTarget: number;
+  nextMilestoneValue: number | null;
   journeyBeganAt: string | null;
   daysSinceJourneyBegan: number | null;
   milestones: JourneyMilestone[];
@@ -38,7 +39,7 @@ export function calculateJourneyMetrics(currentValue: number, history: JourneyNa
   const totalReturn = safeCurrent / JOURNEY_START_VALUE - 1;
   const rawProgress = (safeCurrent - JOURNEY_START_VALUE) / (JOURNEY_TARGET_VALUE - JOURNEY_START_VALUE);
   const progress = Math.min(1, Math.max(0, rawProgress));
-  const nextValue = JOURNEY_MILESTONE_VALUES.find((value) => safeCurrent < value) ?? null;
+  const nextMilestoneValue = JOURNEY_MILESTONE_VALUES.find((value) => safeCurrent < value) ?? null;
 
   return {
     currentValue: safeCurrent,
@@ -46,6 +47,7 @@ export function calculateJourneyMetrics(currentValue: number, history: JourneyNa
     progress,
     remainingToStart: Math.max(0, JOURNEY_START_VALUE - safeCurrent),
     remainingToTarget: Math.max(0, JOURNEY_TARGET_VALUE - safeCurrent),
+    nextMilestoneValue,
     journeyBeganAt,
     daysSinceJourneyBegan,
     milestones: JOURNEY_MILESTONE_VALUES.map((value) => {
@@ -55,7 +57,7 @@ export function calculateJourneyMetrics(currentValue: number, history: JourneyNa
         : null;
       return {
         value,
-        status: safeCurrent >= value ? "achieved" : value === nextValue ? "next" : "locked",
+        status: safeCurrent >= value ? "achieved" : value === nextMilestoneValue ? "next" : "locked",
         reachedAt,
         daysFromJourneyStart,
       };

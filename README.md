@@ -1,6 +1,6 @@
 # The Million Dollar Journey · 百万美元之路
 
-**$10,000 → $1,000,000 · One Portfolio. One Journey.**
+**$1,000 → $1,000,000 · One Portfolio. One Journey.**
 
 丁小山美股公开投资：基于 IBKR 的中英双语个人投资看板与成长记录。
 A bilingual investment dashboard and journal following Ding Xiaoshan's IBKR portfolio.
@@ -22,16 +22,16 @@ The production site now runs on Cloudflare Workers with a dedicated D1 database.
 The source originates from Sites **version 33**. GitHub **v1.0.0** is the initial archive; subsequent commits add direct Cloudflare deployment. The earlier comprehensive optimization plan is not included.
 
 
-## 展示规则 / Display rules (v1.5.0)
+## 展示规则 / Display rules (v1.6.0)
 
 - First paint: live IBKR snapshot from `/api/portfolio` when available.
 - Fallback: bundled verified snapshot only on API failure/empty, with explicit not-live labeling.
 
 ## 展示规则 / Display rules (v1.1.0)
 
-水下阶段（净值 &lt; $10K）看回本；过 $10K 再切百万旅程。
+水下阶段（净值 &lt; $1K）看回本；过 $1K 后进入旅程态，下一站按里程碑推进。
 
-1. **语义色** — 净值 &lt;$10K 时 CURRENT 只用白/浅灰，禁止品牌绿；日涨跌绿/红独立，不绑 CURRENT。
+1. **语义色** — 净值 &lt;$1K 时 CURRENT 只用白/浅灰，禁止品牌绿；日涨跌绿/红独立，不绑 CURRENT。
 2. **币种** — 主数字全站 USD；CNY 仅 CURRENT 下一行副标「约 ¥…」；图表 Y 轴跟 USD。
 3. **同步** — 顶栏两枚 chip：`数据 · MM-DD HH:mm` + `需授权自动同步→`。
 

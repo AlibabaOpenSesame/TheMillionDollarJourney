@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
       default: "百万美元之路",
       template: "%s｜百万美元之路",
     },
-    description: "从 10,000 美元到 1,000,000 美元：丁小山的公开投资旅程、净值曲线、里程碑、持仓与盈亏记录。",
+    description: "从 1,000 美元到 1,000,000 美元：丁小山的公开投资旅程、净值曲线、里程碑、持仓与盈亏记录。",
     icons: {
       icon: [
         { url: "/favicon.ico", sizes: "48x48" },
@@ -39,14 +39,14 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       title: "百万美元之路｜The Million Dollar Journey",
-      description: "$10K → $1M · One Portfolio. One Journey.",
+      description: "$1K → $1M · One Portfolio. One Journey.",
       type: "website",
-      images: [{ url: socialImage, width: 1200, height: 630, alt: "百万美元之路：从 $10K 到 $1M" }],
+      images: [{ url: socialImage, width: 1200, height: 630, alt: "百万美元之路：从 $1K 到 $1M" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "百万美元之路｜The Million Dollar Journey",
-      description: "$10K → $1M · One Portfolio. One Journey.",
+      description: "$1K → $1M · One Portfolio. One Journey.",
       images: [socialImage],
     },
   };

@@ -24,7 +24,7 @@ test("SSR pages load live portfolio before render", async () => {
   assert.match(dashboard, /notLiveBadge/);
   assert.match(copy, /notLiveBadge: "非实时"/);
   assert.match(copy, /notLiveBadge: "Not live"/);
-  assert.match(pkg, /"version": "1\.5\.0"/);
+  assert.match(pkg, /"version": "1.6.0"/);
   assert.doesNotMatch(zh, /verifiedFallbackPortfolio/);
   assert.doesNotMatch(en, /verifiedFallbackPortfolio/);
 });

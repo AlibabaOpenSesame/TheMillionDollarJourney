@@ -23,15 +23,15 @@ export const metadata: Metadata = {
     default: "Million Dollar Journey",
     template: "%s | Million Dollar Journey",
   },
-  description: "From $10,000 to $1,000,000: a public investment journey tracking performance, milestones, holdings, and P&L.",
+  description: "From $1,000 to $1,000,000: a public investment journey tracking performance, milestones, holdings, and P&L.",
   openGraph: {
     title: "The Million Dollar Journey",
-    description: "$10K → $1M · One Portfolio. One Journey.",
+    description: "$1K → $1M · One Portfolio. One Journey.",
   },
   twitter: {
     card: "summary_large_image",
     title: "The Million Dollar Journey",
-    description: "$10K → $1M · One Portfolio. One Journey.",
+    description: "$1K → $1M · One Portfolio. One Journey.",
   },
 };
 
