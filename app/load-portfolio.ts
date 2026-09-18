@@ -21,7 +21,7 @@ function originFromHeaders(requestHeaders: Headers) {
   const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
   if (!host) return null;
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  return ;
+  return protocol + "://" + host;
 }
 
 /** Server-side portfolio load for first paint. Live API wins; fallback only on failure/empty. */
@@ -44,7 +44,7 @@ export async function loadPortfolio(displayCurrency: "USD" | "CNY" = "USD"): Pro
       cache: "no-store",
       headers: { accept: "application/json" },
     });
-    if (!response.ok) throw new Error();
+    if (!response.ok) throw new Error("Portfolio API HTTP " + response.status);
     return (await response.json()) as PortfolioApiResponse;
   };
 
