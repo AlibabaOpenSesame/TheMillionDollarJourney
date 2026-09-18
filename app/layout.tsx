@@ -1,25 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans_SC } from "next/font/google";
-import { headers } from "next/headers";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "swap" });
-const notoSansSC = Noto_Sans_SC({ variable: "--font-noto-sc", subsets: ["latin"], weight: ["400", "500", "600", "700"], display: "swap" });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  const origin = `${protocol}://${host}`;
-  const socialImage = `${origin}/og.png`;
+  // Preserve the existing approved cover without trusting forwarded host headers.
+  const socialImage = "https://openinvestai.com/og.png";
 
   return {
     title: {
-      default: "百万美元之路",
-      template: "%s｜百万美元之路",
+      default: "OpenInvest AI v2.0｜百万美元之路",
+      template: "%s｜OpenInvest AI v2.0",
     },
-    description: "从 1,000 美元到 1,000,000 美元：丁小山的公开投资旅程、净值曲线、里程碑、持仓与盈亏记录。",
+    description: "公开、可验证的投资旅程：IBKR 已核验净值、独立行情估算、持仓、活动记录与每日 Session。",
     icons: {
       icon: [
         { url: "/favicon.ico", sizes: "48x48" },
@@ -55,7 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${notoSansSC.variable}`}>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body>
     </html>
   );
 }

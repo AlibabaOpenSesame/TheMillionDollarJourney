@@ -1,3 +1,14 @@
+## 2.0.0 — Independent command-center preview (in development)
+
+- Independent Sites identity/database and codex/v2.0 branch; no production-domain deployment.
+- Rebuilt bilingual NOW / activity / holdings / journey surface, explicit data provenance and graceful unavailable states.
+- Separate broker truth, quote observations and estimated portfolio/session records.
+- Read-only dashboard API, authenticated administration, expiring synchronization locks and migration-owned schema.
+- Regular-session calendar, partial-quote rejection, per-digit feedback and reduced-motion support.
+- Read-only v1 data export retained as a separately attributed v2 baseline.
+- New behavior tests and corrected Cloudflare TypeScript declarations.
+- Live credentials, full integration verification and final release remain pending; this is not a completed v2 release.
+
 ## 1.6.0 — Journey start $1K → $1M
 
 - START / 起点固定 `$1,000`；尺两端 `$1K → $1M`

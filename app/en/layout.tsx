@@ -20,8 +20,8 @@ export const metadata: Metadata = {
     shortcut: ["/favicon.ico"],
   },
   title: {
-    default: "Million Dollar Journey",
-    template: "%s | Million Dollar Journey",
+    default: "OpenInvest AI v2.0 | The Million Dollar Journey",
+    template: "%s | OpenInvest AI v2.0",
   },
   description: "From $1,000 to $1,000,000: a public investment journey tracking performance, milestones, holdings, and P&L.",
   openGraph: {
