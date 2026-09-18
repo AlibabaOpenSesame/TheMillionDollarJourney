@@ -59,8 +59,8 @@ export type PortfolioApiResponse = {
   fx: FxQuote | null;
 };
 
-// Verified through the connected IBKR account on 2026-07-19. It remains visible
-// only until the first successful Flex Web Service snapshot is stored in D1.
+// Bundled verified backup only. First paint prefers live /api/portfolio;
+// this object is used solely when the live read fails or returns empty.
 export const verifiedFallbackPortfolio: PortfolioData = {
   asOf: "2026-07-17",
   updatedAt: "2026-07-19 06:43 IBKR",

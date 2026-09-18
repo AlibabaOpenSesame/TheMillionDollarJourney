@@ -22,6 +22,11 @@ The production site now runs on Cloudflare Workers with a dedicated D1 database.
 The source originates from Sites **version 33**. GitHub **v1.0.0** is the initial archive; subsequent commits add direct Cloudflare deployment. The earlier comprehensive optimization plan is not included.
 
 
+## 展示规则 / Display rules (v1.5.0)
+
+- First paint: live IBKR snapshot from `/api/portfolio` when available.
+- Fallback: bundled verified snapshot only on API failure/empty, with explicit not-live labeling.
+
 ## 展示规则 / Display rules (v1.1.0)
 
 水下阶段（净值 &lt; $10K）看回本；过 $10K 再切百万旅程。
@@ -41,7 +46,7 @@ npm ci
 npm run dev
 ```
 
-Open the local URL printed by the development server. Routes: `/` (Chinese), `/en` (English), `/jade-key` (3D key). Without a configured database and secrets, the original app displays its bundled historical fallback; it is not live data. The exported data below is not automatically loaded into the UI.
+Open the local URL printed by the development server. Routes: `/` (Chinese), `/en` (English), `/jade-key` (3D key). Pages SSR-fetch `/api/portfolio` for first paint. If that fails, the UI shows the bundled verified fallback and labels it **Not live** / **非实时**. The exported data below is not automatically loaded into the UI.
 
 ```sh
 npm run data:validate

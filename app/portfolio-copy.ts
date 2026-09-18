@@ -51,6 +51,8 @@ export const portfolioCopy = {
       pending: "已接入 · 等待首次日终同步",
       waiting: "待接入自动同步",
       fallback: "当前为最近验证快照",
+      notLiveBadge: "非实时",
+      notLiveHint: "未能读取 IBKR 最新快照，正在显示本地验证备份，不是实时账户数据。",
     },
     fx: {
       label: "实时汇率",
@@ -193,6 +195,8 @@ export const portfolioCopy = {
       pending: "Connected · awaiting the first end-of-day sync",
       waiting: "Connect auto-sync",
       fallback: "Showing the latest verified snapshot",
+      notLiveBadge: "Not live",
+      notLiveHint: "Could not load the latest IBKR snapshot. Showing the bundled verified backup — not live account data.",
     },
     fx: {
       label: "Live FX",

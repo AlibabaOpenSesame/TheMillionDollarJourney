@@ -945,3 +945,10 @@ main:lang(zh-CN) .language-switch a.active {
   .journey-progress-labels,
   .journey-route-values strong { overflow-wrap: anywhere; }
 }
+
+
+.snapshot-badge.snapshot-not-live {
+  border-color: #8a6a3a;
+  color: #e0c48a;
+  background: rgba(199,167,104,.12);
+}
