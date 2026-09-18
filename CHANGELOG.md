@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.1 — Favicon complete mark
+
+- Regenerate square favicons from full `cloud-jade-key-mark-v3` with contain + padding (no half-key crop)
+- `favicon.ico` 16/32/48, `icon-32.png`, `icon-192.png`, `apple-touch-icon.png`
+- Layout metadata unchanged paths; jade-key page untouched
+
 ## 1.4.0 — Locale UX (no live IBKR required)
 
 - ZH/EN independent: unconfigured CTA `待接入自动同步` / `Connect auto-sync` (no fake authorize)
