@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.3 — Favicon head-down + system backgrounds
+
+- Full mark-v3 rotated 90° CCW (jade head down, teeth up)
+- Light `#F3F5F7` / dark `#000` icon sets via `prefers-color-scheme`; `favicon.ico` dark fallback
+- Jade-key page untouched
+
 ## 1.4.2 — Favicon vertical full key
 
 - Full `cloud-jade-key-mark-v3` rotated 90° CW (head up, teeth down) on solid `#000`
