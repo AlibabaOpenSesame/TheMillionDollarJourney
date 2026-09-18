@@ -1,7 +1,6 @@
-import PortfolioDashboard from "./PortfolioDashboard";
-import { loadPortfolio } from "./load-portfolio";
+import CommandCenter from "./live/CommandCenter";
+import { loadLiveDashboard } from "./live/load";
 
 export default async function Home() {
-  const initial = await loadPortfolio("CNY");
-  return <PortfolioDashboard locale="zh" initial={initial} />;
+  return <CommandCenter locale="zh" initial={await loadLiveDashboard()} />;
 }

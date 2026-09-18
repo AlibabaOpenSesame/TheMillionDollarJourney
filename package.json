@@ -1,17 +1,19 @@
 {
   "name": "the-million-dollar-journey",
-  "version": "1.6.0",
+  "version": "2.0.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
   },
   "scripts": {
     "build:cloudflare": "DEPLOY_TARGET=cloudflare npm run build",
-    "deploy:cloudflare": "npm run build:cloudflare && wrangler deploy",
-    "db:migrate:cloudflare": "wrangler d1 migrations apply million-dollar-journey --remote --config wrangler.jsonc",
+    "deploy:cloudflare": "node -e \"throw new Error('v2 is Sites-only. Do not deploy to the v1 Cloudflare worker.')\"",
+    "db:migrate:cloudflare": "node -e \"throw new Error('v2 migrations are managed by its isolated Sites project.')\"",
     "data:validate": "node scripts/portfolio-export.mjs",
     "data:sql": "node scripts/portfolio-export.mjs --sql",
-    "test:unit": "node --test tests/currency-display.test.ts tests/journey-metrics.test.ts tests/ibkr-i18n.test.mjs tests/ibkr-manual-import-auth.test.mjs tests/ibkr-schedule.test.mjs tests/ibkr-sync-schedule.test.mjs tests/ibkr-typography.test.mjs tests/rendered-html.test.mjs tests/live-portfolio-ssr.test.mjs",
+    "test:unit": "node --test tests/currency-display.test.ts tests/journey-metrics.test.ts tests/v2-domain.test.ts",
+    "test:legacy": "node --test tests/ibkr-i18n.test.mjs tests/ibkr-manual-import-auth.test.mjs tests/ibkr-schedule.test.mjs tests/ibkr-sync-schedule.test.mjs tests/ibkr-typography.test.mjs tests/rendered-html.test.mjs tests/live-portfolio-ssr.test.mjs",
+    "typecheck": "tsc --noEmit",
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
     "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
@@ -30,6 +32,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.37.1",
+    "@cloudflare/workers-types": "^4.20260702.1",
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",

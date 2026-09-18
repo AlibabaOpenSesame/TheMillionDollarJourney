@@ -45,6 +45,7 @@ export const syncRuns = sqliteTable("sync_runs", {
   status: text("status").notNull(),
   asOf: text("as_of"),
   error: text("error"),
+  trigger: text("trigger").notNull().default("manual"),
 });
 
 export const fxRates = sqliteTable("fx_rates", {
@@ -69,3 +70,28 @@ export const trades = sqliteTable("trades", {
   index("idx_trades_date").on(table.tradeDate),
 ]);
 
+export const liveQuotes = sqliteTable("live_quotes", {
+  symbol: text("symbol").primaryKey(), price: real("price").notNull(), previousClose: real("previous_close"),
+  currency: text("currency").notNull(), quotedAt: text("quoted_at").notNull(), receivedAt: text("received_at").notNull(),
+  source: text("source").notNull(), entitlement: text("entitlement").notNull(),
+});
+export const liveActivity = sqliteTable("live_activity", {
+  id: text("id").primaryKey(), occurredAt: text("occurred_at").notNull(), kind: text("kind").notNull(),
+  symbol: text("symbol"), value: real("value"), previousValue: real("previous_value"), source: text("source").notNull(), detail: text("detail").notNull(),
+}, table => [index("live_activity_time_idx").on(table.occurredAt)]);
+export const portfolioSessions = sqliteTable("portfolio_sessions", {
+  date: text("date").primaryKey(), openingNav: real("opening_nav").notNull(), current: real("current").notNull(),
+  high: real("high").notNull(), low: real("low").notNull(), events: integer("events").notNull().default(0),
+  status: text("status").notNull(), startedAt: text("started_at").notNull(), updatedAt: text("updated_at").notNull(),
+  sealedAt: text("sealed_at"), snapshotDate: text("snapshot_date").notNull(), coverage: real("coverage").notNull(),
+});
+export const valuationSamples = sqliteTable("valuation_samples", {
+  id: text("id").primaryKey(), sessionDate: text("session_date").notNull(), time: text("time").notNull(),
+  value: real("value").notNull(), snapshotDate: text("snapshot_date").notNull(), state: text("state").notNull(),
+}, table => [index("valuation_samples_session_time_idx").on(table.sessionDate, table.time)]);
+export const runtimeState = sqliteTable("runtime_state", {
+  key: text("key").primaryKey(), value: text("value").notNull(), updatedAt: text("updated_at").notNull(),
+});
+export const syncLocks = sqliteTable("sync_locks", {
+  key: text("key").primaryKey(), owner: text("owner").notNull(), expiresAt: integer("expires_at").notNull(),
+});

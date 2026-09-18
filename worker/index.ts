@@ -4,10 +4,10 @@ import { getUsdCnyRate, unavailableUsdCnyQuote } from "./fx";
 import { fetchIbkrFlex, parseStatement, isCorrectNYSyncTime } from "./ibkr";
 import { writeLatestCache, writeSyncStatus } from "./cache";
 
-interface Env {
+export interface Env {
   ASSETS: Fetcher;
   DB: D1Database;
-  CACHE: KVNamespace;
+  CACHE?: KVNamespace;
   IBKR_FLEX_TOKEN?: string;
   IBKR_FLEX_QUERY_ID?: string;
   IBKR_SYNC_SECRET?: string;
@@ -348,8 +348,8 @@ async function storeImportedPortfolio(env: Env, imported: ImportedPortfolio) {
   return { asOf: imported.asOf, syncedAt };
 }
 
-async function syncPortfolio(env: Env, trigger: SyncTrigger = "manual") {
-  await ensureSchema(env.DB);
+export async function syncPortfolio(env: Env, trigger: SyncTrigger = "manual") {
+  // Production schema is owned by versioned migrations, never request-time DDL.
   const startedAt = new Date().toISOString();
   const run = await env.DB.prepare(
     "INSERT INTO sync_runs (started_at, status, trigger) VALUES (?, 'running', ?)",
@@ -461,8 +461,7 @@ function shouldTriggerRecovery(configured: boolean, lastRun: SyncRunRow | null, 
   return !Number.isFinite(lastStartedAt) || lastStartedAt < latestTick;
 }
 
-async function readPortfolio(env: Env) {
-  await ensureSchema(env.DB);
+export async function readPortfolio(env: { DB: D1Database }) {
   const snapshot = await env.DB.prepare(`SELECT
     as_of AS asOf, synced_at AS syncedAt, currency, net_liquidation AS netLiquidation,
     previous_nav AS previousNav, total_cash AS totalCash, available_funds AS availableFunds,
@@ -481,9 +480,9 @@ async function readPortfolio(env: Env) {
     contract_key AS contractKey, symbol, name, asset_class AS assetClass, currency,
     quantity, price, average_price AS averagePrice, market_value AS marketValue,
     daily_pnl AS dailyPnl, unrealized_pnl AS unrealizedPnl
-    FROM portfolio_positions WHERE as_of = ? ORDER BY ABS(market_value) DESC`).bind(snapshot.asOf).all();
+    FROM portfolio_positions WHERE as_of = ? ORDER BY ABS(market_value) DESC`).bind(snapshot.asOf).all<ParsedPosition>();
   const history = await env.DB.prepare(`SELECT as_of AS date, net_liquidation AS value
-    FROM portfolio_snapshots ORDER BY as_of DESC LIMIT 260`).all();
+    FROM portfolio_snapshots ORDER BY as_of DESC LIMIT 260`).all<{ date: string; value: number }>();
 
   return {
     portfolio: {

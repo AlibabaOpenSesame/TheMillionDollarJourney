@@ -29,6 +29,13 @@
       "when": 1789654800000,
       "tag": "0003_trades",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1789719025646,
+      "tag": "0004_demonic_jackpot",
+      "breakpoints": true
     }
   ]
 }

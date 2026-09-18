@@ -1,0 +1,14 @@
+{
+  "exportedAt": "2026-09-18T13:02:29.376Z",
+  "source": "Cloudflare D1 read-only export",
+  "sourceCommit": "0e7160cad62c78cd5ab1d5e358d975f5fab1e086",
+  "latestAsOf": "2026-09-16",
+  "counts": {
+    "portfolio_snapshots": 196,
+    "portfolio_positions": 18,
+    "sync_runs": 15,
+    "fx_rates": 1,
+    "trades": 0
+  },
+  "note": "Independent v2 seed. v1 database not modified. No market quotes or simulated activity included."
+}
