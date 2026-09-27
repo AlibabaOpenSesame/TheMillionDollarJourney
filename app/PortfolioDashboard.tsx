@@ -384,6 +384,7 @@ function JourneyHero({ account, journey, locale, copy, money, fx }: { account: P
           <span>{copy.journey.currentPortfolio}</span>
           <strong>{formatJourneyUsd(journey.currentValue)}</strong>
           <small>{currentSecondary ?? `${account.asOf} · USD`}</small>
+          <Link className="journey-risk-notice" href={copy.disclaimerPath}>{copy.journey.riskNotice}</Link>
         </article>
         <article className="kpi-return">
           <span>{copy.journey.totalReturn}</span>
@@ -405,7 +406,7 @@ function MilestoneRoadmap({ journey, locale, copy }: { journey: JourneyMetrics; 
       <div className="milestone-grid">
         {journey.milestones.map((milestone, index) => (
           <article className={`milestone-card milestone-${milestone.status}`} key={milestone.value}>
-            <div className="milestone-status-row"><span>{copy.journey.milestone(index + 1)}</span><em className="milestone-pill">{milestone.status === "achieved" ? copy.journey.achieved : milestone.status === "next" ? copy.journey.next : copy.journey.locked}</em></div>
+            <div className="milestone-status-row"><span>{copy.journey.milestone(index + 1)}</span><em className="milestone-pill">{milestone.status === "achieved" ? <><span className="milestone-check" aria-hidden="true">✓</span>{copy.journey.achieved}</> : milestone.status === "next" ? copy.journey.next : copy.journey.locked}</em></div>
             <strong>{formatMilestoneUsd(milestone.value)}</strong>
             <time dateTime={milestone.reachedAt ?? undefined}>{milestone.reachedAt ? formatJourneyDate(milestone.reachedAt, locale) : "—"}</time>
             <small>{milestone.daysFromJourneyStart !== null ? copy.journey.recordedSince(milestone.daysFromJourneyStart) : copy.journey.noRecordedDate}</small>
@@ -671,14 +672,20 @@ export default function PortfolioDashboard({ locale, initial }: { locale: Portfo
               </div>
               <img className="amateur-radio-logo" src="/bd4wuc-amateur-radio-logo.webp" alt={locale === "zh" ? "BD4WUC 业余无线电标识" : "BD4WUC amateur radio logo"} width="400" height="400" />
             </article>
-            <article className="panel contact-card"><strong>{locale === "zh" ? "中国" : "China"}</strong><a href="tel:+8619951677665"><span>{copy.table.phone}</span>+86 199 5167 7665</a><a href="mailto:people@china.com"><span>{copy.table.email}</span>people@china.com</a></article>
-            <article className="panel contact-card"><strong>{locale === "zh" ? "美国" : "United States"}</strong><a href="tel:+19809990101"><span>{copy.table.phone}</span>+1 980 999 0101</a><a href="mailto:0288882@gmail.com"><span>{copy.table.email}</span>0288882@gmail.com</a></article>
           </div>
         </section>
 
         <footer>
           <p>{copy.footer.source(displaySource(account.source, locale))}</p>
           <p>{copy.footer.schedule}</p>
+          <div className="footer-legal">
+            <p className="footer-anti-scam">{copy.footer.antiScam}</p>
+            <nav className="footer-legal-links" aria-label={copy.footer.legalNavLabel}>
+              <Link href={copy.disclaimerPath}>{copy.footer.disclaimer}</Link>
+              <span aria-hidden="true">·</span>
+              <Link href={copy.privacyPath}>{copy.footer.privacy}</Link>
+            </nav>
+          </div>
         </footer>
       </div>
     </main>

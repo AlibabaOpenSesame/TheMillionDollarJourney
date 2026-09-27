@@ -1,39 +1,52 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import type { ReactNode } from "react";
+import { SOCIAL_IMAGE_PATH } from "../site-locale";
 
-export const metadata: Metadata = {
-  icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "48x48" },
-      { url: "/icon-light-32.png", type: "image/png", sizes: "32x32", media: "(prefers-color-scheme: light)" },
-      { url: "/icon-dark-32.png", type: "image/png", sizes: "32x32", media: "(prefers-color-scheme: dark)" },
-      { url: "/icon-light-192.png", type: "image/png", sizes: "192x192", media: "(prefers-color-scheme: light)" },
-      { url: "/icon-dark-192.png", type: "image/png", sizes: "192x192", media: "(prefers-color-scheme: dark)" },
-      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
-      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
-    ],
-    apple: [
-      { url: "/apple-touch-icon-light.png", sizes: "180x180", media: "(prefers-color-scheme: light)" },
-      { url: "/apple-touch-icon-dark.png", sizes: "180x180", media: "(prefers-color-scheme: dark)" },
-      { url: "/apple-touch-icon.png", sizes: "180x180" },
-    ],
-    shortcut: ["/favicon.ico"],
-  },
-  title: {
-    default: "Million Dollar Journey",
-    template: "%s | Million Dollar Journey",
-  },
-  description: "From $1,000 to $1,000,000: a public investment journey tracking performance, milestones, holdings, and P&L.",
-  openGraph: {
-    title: "The Million Dollar Journey",
-    description: "$1K → $1M · One Portfolio. One Journey.",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "The Million Dollar Journey",
-    description: "$1K → $1M · One Portfolio. One Journey.",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const requestHeaders = await headers();
+  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
+  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
+  const socialImage = `${protocol}://${host}${SOCIAL_IMAGE_PATH}`;
+
+  return {
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "48x48" },
+        { url: "/icon-light-32.png", type: "image/png", sizes: "32x32", media: "(prefers-color-scheme: light)" },
+        { url: "/icon-dark-32.png", type: "image/png", sizes: "32x32", media: "(prefers-color-scheme: dark)" },
+        { url: "/icon-light-192.png", type: "image/png", sizes: "192x192", media: "(prefers-color-scheme: light)" },
+        { url: "/icon-dark-192.png", type: "image/png", sizes: "192x192", media: "(prefers-color-scheme: dark)" },
+        { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
+        { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+      ],
+      apple: [
+        { url: "/apple-touch-icon-light.png", sizes: "180x180", media: "(prefers-color-scheme: light)" },
+        { url: "/apple-touch-icon-dark.png", sizes: "180x180", media: "(prefers-color-scheme: dark)" },
+        { url: "/apple-touch-icon.png", sizes: "180x180" },
+      ],
+      shortcut: ["/favicon.ico"],
+    },
+    title: {
+      default: "Million Dollar Journey",
+      template: "%s | Million Dollar Journey",
+    },
+    description: "From $1,000 to $1,000,000: a public investment journey tracking performance, milestones, holdings, and P&L.",
+    openGraph: {
+      title: "The Million Dollar Journey",
+      description: "$1K → $1M · One Portfolio. One Journey.",
+      type: "website",
+      locale: "en_US",
+      images: [{ url: socialImage, width: 1200, height: 630, alt: "The Million Dollar Journey: $1K → $1M" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "The Million Dollar Journey",
+      description: "$1K → $1M · One Portfolio. One Journey.",
+      images: [socialImage],
+    },
+  };
+}
 
 export default function EnglishLayout({ children }: Readonly<{ children: ReactNode }>) {
   return children;

@@ -1,3 +1,13 @@
+## 1.6.1 — P0 hotfix
+
+- Share image `/og.png` redrawn as static `$1K → $1M` card (1200×630, source `scripts/og/og.svg`); `/en` now also emits `og:image` / `twitter:image`
+- Achieved milestone card: `#12352A` background, `#E8F5EE` amount, gold ✓, secondary text ≥4.5:1
+- Contact: X only (phone numbers + email addresses removed); footer adds anti-scam line and links to 免责声明 / 隐私说明 (Disclaimer / Privacy)
+- New static pages `/disclaimer`, `/privacy`, `/en/disclaimer`, `/en/privacy` (placeholder copy pending designer final)
+- One-line risk notice under the hero net value, linking to the disclaimer (ZH/EN)
+- SSR `<html lang>`: `/en/*` → `en`, everything else → `zh-CN` (via `proxy.ts` + root layout); kept in sync on client navigation
+- IBKR sync pipeline, cron and D1 schema untouched
+
 ## 1.6.0 — Journey start $1K → $1M
 
 - START / 起点固定 `$1,000`；尺两端 `$1K → $1M`

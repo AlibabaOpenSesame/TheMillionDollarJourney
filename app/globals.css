@@ -952,3 +952,70 @@ main:lang(zh-CN) .language-switch a.active {
   color: #e0c48a;
   background: rgba(199,167,104,.12);
 }
+
+/* v1.6.1 P0 hotfix ------------------------------------------------------- */
+:root { --gold: #d4af37; }
+
+/* Achieved milestone: readable in both day + night themes (only the achieved state changes). */
+.milestone-card.milestone-achieved,
+.theme-day .milestone-card.milestone-achieved { border-color: #2f6b52; background: #12352a; }
+.milestone-card.milestone-achieved > strong,
+.theme-day .milestone-card.milestone-achieved > strong { color: #e8f5ee; }
+.milestone-card.milestone-achieved > div span,
+.milestone-card.milestone-achieved time,
+.milestone-card.milestone-achieved small,
+.theme-day .milestone-card.milestone-achieved > div span,
+.theme-day .milestone-card.milestone-achieved time,
+.theme-day .milestone-card.milestone-achieved small { color: #a8cdba; } /* 7.7:1 on #12352A */
+.milestone-card.milestone-achieved .milestone-pill,
+.theme-day .milestone-card.milestone-achieved .milestone-pill { border-color: #4f8a70; background: rgba(232,245,238,.06); color: #e8f5ee; }
+.milestone-card.milestone-achieved .milestone-pill .milestone-check,
+.theme-day .milestone-card.milestone-achieved .milestone-pill .milestone-check { margin-right: 5px; color: var(--gold); font: 700 .75rem/1 var(--font-ui); letter-spacing: 0; text-transform: none; }
+
+/* One-line risk notice under the hero net value. */
+.journey-kpis .journey-risk-notice { display: inline-block; margin-top: 10px; color: #b4bcc3; font-size: .75rem; font-weight: 520; line-height: 1.45; text-decoration: underline; text-decoration-color: rgba(180,188,195,.45); text-underline-offset: 3px; }
+.journey-kpis .journey-risk-notice:hover { color: var(--ink); text-decoration-color: currentColor; }
+.journey-kpis .journey-risk-notice:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 2px; }
+.theme-day .journey-kpis .journey-risk-notice { color: #41484f; text-decoration-color: rgba(65,72,79,.45); }
+
+/* Contact is X-only now. */
+.contact-grid { grid-template-columns: minmax(0, 560px); }
+
+/* Footer: anti-scam line + legal links. */
+footer { flex-wrap: wrap; row-gap: 14px; }
+.footer-legal { flex: 1 0 100%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 24px; margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
+.footer-legal .footer-anti-scam { color: #c5ccd3; font-size: .75rem; font-weight: 560; line-height: 1.5; }
+.footer-legal-links { display: inline-flex; align-items: center; gap: 10px; font-size: .75rem; }
+.footer-legal-links a { color: #aeb5bb; text-decoration: underline; text-decoration-color: rgba(174,181,187,.45); text-underline-offset: 3px; }
+.footer-legal-links a:hover { color: var(--green); }
+.footer-legal-links span { color: #56606a; }
+.theme-day .footer-legal .footer-anti-scam { color: #2f363c; }
+.theme-day .footer-legal-links a { color: #41484f; }
+
+/* Static legal pages (/disclaimer, /privacy, /en/…): night palette of the dashboard. */
+.legal-page {
+  --ink: #f3f5f7;
+  --line: #252b31;
+  --paper: #090b0d;
+  --green: #35d490;
+  --amber: #c7a768;
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.legal-shell { width: min(760px, 100%); margin: 0 auto; padding: 6px 2px 56px; }
+.legal-nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--line); font-size: .8125rem; }
+.legal-nav a, .legal-footer a { color: #c5ccd3; text-decoration: none; }
+.legal-nav a:hover, .legal-footer a:hover { color: var(--green); }
+.legal-nav a:focus-visible, .legal-footer a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 2px; }
+.legal-header { padding: clamp(36px, 6vw, 64px) 0 18px; }
+.legal-kicker { color: var(--amber); font: 650 .625rem/1 var(--font-technical); letter-spacing: .2em; }
+.legal-page h1 { margin-top: 14px; color: #f7f8f8; font-size: clamp(32px, 5vw, 52px); }
+.legal-intro { margin: 16px 0 0; color: #aeb5bb; font-size: .9375rem; line-height: 1.7; }
+.legal-section { padding: 22px 0; border-top: 1px solid var(--line); }
+.legal-section h2 { margin: 0 0 8px; color: #e8f5ee; font-size: 1.0625rem; font-weight: 640; line-height: 1.35; }
+.legal-section p { margin: 0; color: #c5ccd3; font-size: .9375rem; line-height: 1.75; }
+.legal-section p + p { margin-top: 10px; }
+.legal-footer { display: flex; flex-wrap: wrap; gap: 10px 22px; padding: 22px 0 0; border-top: 1px solid var(--line); font-size: .8125rem; }
+.legal-footer a { text-decoration: underline; text-decoration-color: rgba(197,204,211,.4); text-underline-offset: 3px; }

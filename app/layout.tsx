@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_SC } from "next/font/google";
 import { headers } from "next/headers";
+import HtmlLangSync from "./HtmlLangSync";
+import { SITE_LANG_HEADER, SOCIAL_IMAGE_PATH, normalizeHtmlLang } from "./site-locale";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
@@ -12,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   const origin = `${protocol}://${host}`;
-  const socialImage = `${origin}/og.png`;
+  const socialImage = `${origin}${SOCIAL_IMAGE_PATH}`;
 
   return {
     title: {
@@ -52,10 +54,15 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // `/en` and `/en/*` → "en"; everything else → "zh-CN" (header set by proxy.ts).
+  const lang = normalizeHtmlLang((await headers()).get(SITE_LANG_HEADER));
   return (
-    <html lang="zh-CN">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${notoSansSC.variable}`}>{children}</body>
+    <html lang={lang}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${notoSansSC.variable}`}>
+        <HtmlLangSync />
+        {children}
+      </body>
     </html>
   );
 }
