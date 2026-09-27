@@ -667,7 +667,7 @@ export default function PortfolioDashboard({ locale, initial }: { locale: Portfo
             <article className="panel contact-card social-card">
               <div className="radio-contact-copy">
                 <strong>{locale === "zh" ? "X / 业余无线电" : "X / Amateur Radio"}</strong>
-                <a href="https://x.com/languagemodelAI" target="_blank" rel="noreferrer"><span>{locale === "zh" ? "账号" : "Account"}</span>@languagemodelAI</a>
+                <a href="https://x.com/idingxs" target="_blank" rel="noreferrer"><span>{locale === "zh" ? "账号" : "Account"}</span>@idingxs</a>
                 <p><span>{copy.table.callSign}</span>BD4WUC</p>
               </div>
               <img className="amateur-radio-logo" src="/bd4wuc-amateur-radio-logo.webp" alt={locale === "zh" ? "BD4WUC 业余无线电标识" : "BD4WUC amateur radio logo"} width="400" height="400" />

@@ -1012,6 +1012,7 @@ footer { flex-wrap: wrap; row-gap: 14px; }
 .legal-header { padding: clamp(36px, 6vw, 64px) 0 18px; }
 .legal-kicker { color: var(--amber); font: 650 .625rem/1 var(--font-technical); letter-spacing: .2em; }
 .legal-page h1 { margin-top: 14px; color: #f7f8f8; font-size: clamp(32px, 5vw, 52px); }
+.legal-updated { margin: 10px 0 0; color: #9aa3ad; font: 500 .75rem/1.4 var(--font-technical); letter-spacing: .02em; } /* 7.7:1 on #090b0d */
 .legal-intro { margin: 16px 0 0; color: #aeb5bb; font-size: .9375rem; line-height: 1.7; }
 .legal-section { padding: 22px 0; border-top: 1px solid var(--line); }
 .legal-section h2 { margin: 0 0 8px; color: #e8f5ee; font-size: 1.0625rem; font-weight: 640; line-height: 1.35; }

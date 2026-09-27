@@ -22,6 +22,7 @@ export default function LegalPage({ locale, doc }: { locale: PortfolioLocale; do
         <header className="legal-header">
           <span className="legal-kicker">{page.kicker}</span>
           <h1>{page.title}</h1>
+          <p className="legal-updated">{page.updated}</p>
           <p className="legal-intro">{page.intro}</p>
         </header>
         {page.sections.map((section) => (
@@ -32,7 +33,7 @@ export default function LegalPage({ locale, doc }: { locale: PortfolioLocale; do
         ))}
         <footer className="legal-footer">
           <Link href={copy.docPath(otherDoc)}>{copy.docLinkLabel[otherDoc]}</Link>
-          <a href="https://x.com/languagemodelAI" target="_blank" rel="noreferrer">{copy.contactLabel}</a>
+          <a href="https://x.com/idingxs" target="_blank" rel="noreferrer">{copy.contactLabel}</a>
         </footer>
       </div>
     </main>

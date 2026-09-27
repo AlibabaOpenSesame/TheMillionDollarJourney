@@ -37,8 +37,7 @@ export const portfolioCopy = {
       locked: "尚未解锁",
       recordedSince: (days: number) => `已记录 ${days.toLocaleString("zh-CN")} 天`,
       noRecordedDate: "尚无可验证日期",
-      // COPY: placeholder pending designer final
-      riskNotice: "公开真实账户，持仓高度集中，不构成投资建议。",
+      riskNotice: "这是真实账户的公开记录，持仓高度集中，不构成投资建议。",
     },
     latestRefresh: "最新刷新",
     closeData: "收盘数据",
@@ -112,8 +111,7 @@ export const portfolioCopy = {
       noOptions: "当前没有期权持仓",
       noOptionsNote: "未来出现期权仓位时，会自动展示方向、数量、成本、市值和浮动盈亏。",
       contact: "联系方式",
-      // COPY: placeholder pending designer final
-      contactNote: "仅通过 X 联系",
+      contactNote: "唯一联系方式是 X，以本站链接的账号为准。",
     },
     allocationAria: "当前资产配置",
     table: {
@@ -149,11 +147,8 @@ export const portfolioCopy = {
     footer: {
       source: (source: string) => `数据来源：${source} · 人民币金额按页面所示当前汇率换算 · 同步失败时保留上次成功快照。`,
       schedule: "每天北京时间 07:30 执行，IBKR 报表未就绪时自动重试。",
-      // COPY: placeholder pending designer final
-      antiScam: "本人不会私信荐股、拉群或代客理财，冒充者请举报。",
-      // COPY: placeholder pending designer final
+      antiScam: "我不会私信荐股、拉群、收费或代客理财。以我名义做这些事的都是冒充。",
       disclaimer: "免责声明",
-      // COPY: placeholder pending designer final
       privacy: "隐私说明",
       legalNavLabel: "法律信息",
     },
@@ -194,8 +189,7 @@ export const portfolioCopy = {
       locked: "Locked",
       recordedSince: (days: number) => `${days.toLocaleString("en-US")} recorded days`,
       noRecordedDate: "No verified date yet",
-      // COPY: placeholder pending designer final
-      riskNotice: "Real public account, highly concentrated. Not investment advice.",
+      riskNotice: "A real account, shown in public. Highly concentrated. Not investment advice.",
     },
     latestRefresh: "LAST REFRESH",
     closeData: "Market close data",
@@ -269,8 +263,7 @@ export const portfolioCopy = {
       noOptions: "No option positions",
       noOptionsNote: "Future option positions will automatically show direction, quantity, cost, market value, and unrealized P&L.",
       contact: "Contact",
-      // COPY: placeholder pending designer final
-      contactNote: "Reach me on X only",
+      contactNote: "X is my only contact channel. Trust only the account linked here.",
     },
     allocationAria: "Current asset allocation",
     table: {
@@ -306,11 +299,8 @@ export const portfolioCopy = {
     footer: {
       source: (source: string) => `Source: ${source} · Updated after each U.S. trading day · The latest successful snapshot is retained if synchronization fails.`,
       schedule: "Runs every day at 07:30 China Standard Time and retries when the IBKR report is not ready.",
-      // COPY: placeholder pending designer final
-      antiScam: "I never DM stock tips, run paid groups, or manage money for others — report impersonators.",
-      // COPY: placeholder pending designer final
+      antiScam: "I never DM stock tips, run groups, charge fees, or manage money for anyone. Anyone doing this in my name is an impersonator.",
       disclaimer: "Disclaimer",
-      // COPY: placeholder pending designer final
       privacy: "Privacy",
       legalNavLabel: "Legal",
     },
